@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.utils.shapebuilders.ArrowShapeBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 
 import java.util.ArrayList;
@@ -28,6 +30,13 @@ public class PolyominoesGame extends ApplicationAdapter {
 	private ArrayList<Polyomino> nextGeneration;
 	private ArrayList<int[][]> childrenData;
 	private ArrayList<Color> colors;
+	private ArrayList<Vector2> positions;
+
+	float red;
+	float green;
+	float blue;
+
+	int posx = 0, posy = 200;
 
 	private Color temp;
 	int generationCap = 4;
@@ -42,6 +51,8 @@ public class PolyominoesGame extends ApplicationAdapter {
 
 		currentGeneration = new ArrayList<Polyomino>();
 		nextGeneration = new ArrayList<Polyomino>();
+		colors = new ArrayList<Color>();
+		positions = new ArrayList<Vector2>();
 		first = new Polyomino();
 
 		first.giveBirth();
@@ -66,6 +77,26 @@ public class PolyominoesGame extends ApplicationAdapter {
 
 		Gdx.app.log("ASDFASDFASDFASDF", currentGeneration.size() + "");
 		temp = new Color(0, 0, 1.0f, 1.0f);
+
+		for(int i = 0; i < currentGeneration.size(); i++){
+			red = (float) Math.sin(i / (currentGeneration.size()/7)) * 0.5f + 0.5f;
+			green = (float) Math.sin(i / (currentGeneration.size()/7) + 3*Math.PI/4) * 0.5f + 0.5f;
+			blue = (float) Math.sin(i / (currentGeneration.size()/7) + 3*Math.PI/2) * 0.5f + 0.5f;
+
+			colors.add(new Color(red, green, blue, 1.0f));
+		}
+
+		for(int i = 0; i < currentGeneration.size(); i++){
+
+			if(posx > 880){
+				posx = 0;
+				posy += 200;
+			}
+
+			positions.add(new Vector2(posx, posy));
+			posx += 80;
+		}
+
 	}
 
 	public void removeDuplicates(ArrayList<Polyomino> children){
@@ -94,7 +125,7 @@ public class PolyominoesGame extends ApplicationAdapter {
 		renderer.set(ShapeRenderer.ShapeType.Filled);
 
 		for(int ii = 0 ; ii < currentGeneration.size(); ii++) {
-			currentGeneration.get(ii).draw(renderer, temp, ii * 60, 200);
+			currentGeneration.get(ii).draw(renderer, colors.get(ii), (int)positions.get(ii).x, (int)positions.get(ii).y);
 		}
 
 
