@@ -3,18 +3,27 @@ package com.ugen.block;
 
 import com.badlogic.gdx.Gdx;
 
+import java.util.stream.IntStream;
+
 final public class Matrix {
     private int M;             // number of rows
     private int N;             // number of columns
     private int[][] data;   // M-by-N array
+    private Integer[][] integerData;
     private Matrix downLeft;
     private Matrix upRight;
+
 
     // create M-by-N matrix of 0's
     public Matrix(int M, int N) {
         this.M = M;
         this.N = N;
         data = new int[M][N];
+        integerData = new Integer[M][N];
+
+        for(int i = 0; i < M; i++)
+            for(int j = 0; j < N; j++)
+                integerData[i][j] = Integer.valueOf(data[i][j]);
 
         downLeft = new Matrix(data);
         upRight = new Matrix(data);
@@ -56,6 +65,68 @@ final public class Matrix {
     public Matrix moveLeft(){
         Matrix A = this;
         return A.times(downLeft);
+    }
+
+    public Matrix rotateClockwise(){
+        Matrix A;
+        Matrix B = this.transpose();
+        A = this.transpose();
+        boolean b = true;
+
+
+        for(int i = 0; i < M; i++){
+            for(int j = 0; j < N; j++){
+                A.data[i][j] = B.data[i][M - 1 - j];
+            }
+        }
+
+        while(!contains((A.data[0]), 1))
+            A = A.moveUp();
+
+
+        while(b) {
+            for (int i = 0; i < N; i++) {
+                if (A.data[i][0] == 1)
+                    b = false;
+            }
+
+            if(!b)
+                break;
+
+            A = A.moveLeft();
+
+        }
+
+        return A;
+    }
+
+    public Matrix rotateCounterClockwise(){
+        Matrix A;
+        Matrix B = this.transpose();
+        A = this.transpose();
+
+
+
+        boolean b = true;
+
+        for(int i = 0; i < A.getRows(); i++)
+            for(int j = 0; j < A.getRows(); j++)
+                A.data[i][j] = B.data[B.getRows() - 1 - i][j];
+
+
+
+       /* while(!contains((A.data[0]), 1))
+            A.moveUp();
+
+        while(b) {
+            for (int i = 0; i < N; i++)
+                if(A.data[0][i] == 1)
+                    b = false;
+
+            moveLeft();
+        }*/
+
+        return A;
     }
 
     public void setData(int[][] data){
@@ -202,10 +273,22 @@ final public class Matrix {
     // print matrix to standard output
     public void show() {
         for (int i = 0; i < M; i++) {
-
-            Gdx.app.log("DEBUG", data[i][0] + " " + data[i][1] + " " + data[i][2] + " " +  data[i][3] + "");
+            Gdx.app.log("DEBUG", data[i][0] + " " + data[i][1] + " " + data[i][2] + " " + data[i][3]);
 
         }
+        Gdx.app.log("DEBUG", " ");
+    }
+
+    public boolean contains(int[] array, int toContain){
+        boolean b = false;
+
+        for(int i = 0; i < array.length; i++)
+            if (array[i] == toContain) {
+                b = true;
+                break;
+            }
+
+        return b;
     }
 
     public int getRows(){

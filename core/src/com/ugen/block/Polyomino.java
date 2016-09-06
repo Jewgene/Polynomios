@@ -57,6 +57,10 @@ public class Polyomino {
         }
     }
 
+    public void rotate(){
+        this.grid = (grid.rotateClockwise());
+    }
+
     public void draw(ShapeRenderer sr, Color color, int posx, int posy){
         sr.setColor(color);
         for(int i = 0; i < grid.getRows(); i++){
@@ -64,14 +68,10 @@ public class Polyomino {
                //dx.app.log("DEBUG", grid.getData()[i][j] + "");
 
                 if(grid.getData()[i][j] == 1){
-                    sr.rect(posx + j * 20,  posy + i * 20 , 20, 20);
+                    sr.rect(posx + j * 10,  posy + i * 10 , 10, 10);
                 }
             }
         }
-    }
-
-    public void massAbortion(){
-        //Kill the autistic babies
     }
 
     public int getCellNum(){
@@ -97,11 +97,27 @@ public class Polyomino {
                 }
             }
         }
-
-        Gdx.app.log("ASDFAFASDFASDFASDFASDF", adjacents.size() + "");
     }
 
     public Matrix getGrid(){
         return grid;
     }
+
+    public void setGrid(Matrix grid){
+        this.grid = grid;
+    }
+
+    public <T> boolean contains(T[] array, T toContain){
+        boolean b = false;
+
+        for(int i = 0; i < array.length; i++)
+            if (array[i] == toContain) {
+                b = true;
+                break;
+            }
+
+        return b;
+    }
 }
+
+
