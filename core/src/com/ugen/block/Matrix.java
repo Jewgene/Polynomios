@@ -76,7 +76,7 @@ final public class Matrix {
 
         for(int i = 0; i < M; i++){
             for(int j = 0; j < N; j++){
-                A.data[i][j] = B.data[i][M - 1 - j];
+                A.data[i][j] = B.data[M - 1 - i][j];
             }
         }
 

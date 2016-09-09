@@ -12,10 +12,14 @@ import java.util.ArrayList;
  * Created by eugen_000 on 9/3/2016.
  */
 public class Polyomino {
+
+    int blockWidth;
+
     private ArrayList<Rectangle> blocks;
     private Matrix grid;
     private ArrayList<Vector2> adjacents;
     private ArrayList<Polyomino> children;
+    private Vector2 position;
 
     private int cellNum;
 
@@ -23,6 +27,7 @@ public class Polyomino {
         grid = new Matrix(cellNum, cellNum);
         children = new ArrayList<Polyomino>();
         adjacents = new ArrayList<Vector2>();
+        position = new Vector2();
 
         this.cellNum = cellNum;
     }
@@ -31,6 +36,7 @@ public class Polyomino {
         grid = new Matrix(2, 2);
         children = new ArrayList<Polyomino>();
         adjacents = new ArrayList<Vector2>();
+        position = new Vector2();
         this.cellNum = getGrid().getRows();
         grid.put(1, 0, 0);
     }
@@ -68,7 +74,7 @@ public class Polyomino {
                //dx.app.log("DEBUG", grid.getData()[i][j] + "");
 
                 if(grid.getData()[i][j] == 1){
-                    sr.rect(posx + j * 10,  posy + i * 10 , 10, 10);
+                    sr.rect(posx - j * blockWidth,  posy - (i+1) * blockWidth , blockWidth, blockWidth);
                 }
             }
         }
@@ -117,6 +123,34 @@ public class Polyomino {
             }
 
         return b;
+    }
+
+    public void setPosition(Vector2 position){
+        this.position = position;
+    }
+
+    public void moveDown(){
+        position.y -= blockWidth;
+    }
+
+    public void moveUp(){
+        position.y += blockWidth;
+    }
+
+    public void moveRight(){
+        position.x += blockWidth;
+    }
+
+    public void moveLeft(){
+        position.x -= blockWidth;
+    }
+
+    public Vector2 getPosition(){
+        return position;
+    }
+
+    public void setBlockWidth(int blockWidth){
+        this.blockWidth = blockWidth;
     }
 }
 
