@@ -23,12 +23,17 @@ public class Polyomino {
 
     private int cellNum;
 
+
     public Polyomino(int cellNum){
         grid = new Matrix(cellNum, cellNum);
         blocks = new ArrayList<Rectangle>();
         children = new ArrayList<Polyomino>();
         adjacents = new ArrayList<Vector2>();
         position = new Vector2();
+
+        for(int i = 0; i < grid.getRows(); i++){
+            blocks.add(new Rectangle());
+        }
 
         this.cellNum = cellNum;
     }
@@ -41,6 +46,10 @@ public class Polyomino {
         position = new Vector2();
         this.cellNum = getGrid().getRows();
         grid.put(1, 0, 0);
+
+        for(int i = 0; i < grid.getRows(); i++){
+            blocks.add(new Rectangle());
+        }
     }
 
     public void giveBirth(){
@@ -131,7 +140,7 @@ public class Polyomino {
         for(int i = 0; i < grid.getRows(); i++){
             for(int j = 0; j < grid.getRows(); j++){
                 if(grid.getData()[i][j] == 1)
-                    blocks.add(new Rectangle(position.x - blockWidth * j, position.y - blockWidth * (i+1), blockWidth, blockWidth));
+                    blocks.set(i, new Rectangle(position.x - blockWidth * j, position.y - blockWidth * (i+1), blockWidth, blockWidth));
 
             }
         }
@@ -151,6 +160,13 @@ public class Polyomino {
 
     public void moveUp(){
         position.y += blockWidth;
+        for(int i = 0; i < grid.getRows(); i++){
+            for(int j = 0; j < grid.getRows(); j++){
+                if(grid.getData()[i][j] == 1)
+                    blocks.set(i, new Rectangle(position.x - blockWidth * j, position.y - blockWidth * (i+1), blockWidth, blockWidth));
+            }
+        }
+
     }
 
     public void moveRight(){

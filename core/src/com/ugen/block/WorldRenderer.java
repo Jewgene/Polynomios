@@ -90,25 +90,30 @@ public class WorldRenderer {
 
         if(timer > 500){
             first.moveDown();
-            Gdx.app.log("DEBUG", first.getPosition().y + "");
+            Gdx.app.log("DEBUG", first.getBlocks().size()+"");
             timer = 0;
             initTime = System.currentTimeMillis();
         }
 
         for(int i = 0; i < dead.size(); i++){
             for(int j = 0; j < first.getBlocks().size(); j++){
-                if(first.getBlocks().get(j).overlaps(dead.get(i).getBlocks().get(j)))
-                    first.moveUp();
+                for(int ii = 0; ii < first.getBlocks().size(); ii++) {
+                    if (first.getBlocks().get(ii).overlaps(dead.get(i).getBlocks().get(j))) {
+                        first.moveUp();
+                        dead.add(first);
+                        first = Polyominoes.get(rand.nextInt(Polyominoes.size()));
+                        first.setPosition(new Vector2(width / 2, width));
+                    }
+                }
             }
         }
 
         for(int i = 0; i < first.getBlocks().size(); i++){
-            if(first.getBlocks().get(i).getY() < 0) {
+            if(first.getBlocks().get(i).getY() < -first.getBlockWidth()) {
                 first.moveUp();
                 dead.add(first);
                 first = Polyominoes.get(rand.nextInt(Polyominoes.size()));
                 first.setPosition(new Vector2(width / 2, width));
-
             }
         }
 
