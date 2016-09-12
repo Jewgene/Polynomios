@@ -100,9 +100,13 @@ public class WorldRenderer {
                 for(int ii = 0; ii < first.getBlocks().size(); ii++) {
                     if (first.getBlocks().get(ii).overlaps(dead.get(i).getBlocks().get(j))) {
                         first.moveUp();
+                        if(first.getBlocks().get(j).getY() >= width){
+                            Gdx.app.exit();
+                        }
                         dead.add(first);
                         first = Polyominoes.get(rand.nextInt(Polyominoes.size()));
                         first.setPosition(new Vector2(width / 2, width));
+                        break;
                     }
                 }
             }
@@ -114,6 +118,7 @@ public class WorldRenderer {
                 dead.add(first);
                 first = Polyominoes.get(rand.nextInt(Polyominoes.size()));
                 first.setPosition(new Vector2(width / 2, width));
+                break;
             }
         }
 
@@ -139,5 +144,9 @@ public class WorldRenderer {
 
     public Polyomino getCurrent(){
         return first;
+    }
+
+    public OrthographicCamera getCam(){
+        return cam;
     }
 }

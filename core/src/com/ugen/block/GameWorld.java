@@ -110,6 +110,8 @@ public class GameWorld {
         this.renderer = renderer;
     }
 
+    public PolyominoesGame getGame(){return theGame;}
+
     public int getGenerationCap() {
         return generationCap;
     }

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class Polyomino {
 
     float blockWidth;
+    private boolean moving;
 
     private ArrayList<Rectangle> blocks;
     private Matrix grid;
@@ -85,7 +86,7 @@ public class Polyomino {
                //dx.app.log("DEBUG", grid.getData()[i][j] + "");
 
                 if(grid.getData()[i][j] == 1){
-                    sr.rect(position.x - j * blockWidth,  position.y - (i+1) * blockWidth , blockWidth, blockWidth);
+                    sr.rect(position.x + j * blockWidth,  position.y - (i+1) * blockWidth , blockWidth, blockWidth);
                 }
             }
         }
@@ -137,44 +138,73 @@ public class Polyomino {
     }
 
     public void setPosition(Vector2 position){
+        int rectNum = 0;
+        this.position = position;
         for(int i = 0; i < grid.getRows(); i++){
             for(int j = 0; j < grid.getRows(); j++){
-                if(grid.getData()[i][j] == 1)
-                    blocks.set(i, new Rectangle(position.x - blockWidth * j, position.y - blockWidth * (i+1), blockWidth, blockWidth));
+                if(grid.getData()[i][j] == 1) {
+                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i + 1), blockWidth, blockWidth));
+                    rectNum++;
+                }
 
             }
         }
 
-        this.position = position;
+
     }
 
     public void moveDown(){
+        int rectNum = 0;
         position.y -= blockWidth;
         for(int i = 0; i < grid.getRows(); i++){
             for(int j = 0; j < grid.getRows(); j++){
-                if(grid.getData()[i][j] == 1)
-                    blocks.set(i, new Rectangle(position.x - blockWidth * j, position.y - blockWidth * (i+1), blockWidth, blockWidth));
+                if(grid.getData()[i][j] == 1) {
+                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i + 1), blockWidth, blockWidth));
+                    rectNum++;
+                }
             }
         }
     }
 
     public void moveUp(){
+        int rectNum = 0;
         position.y += blockWidth;
         for(int i = 0; i < grid.getRows(); i++){
             for(int j = 0; j < grid.getRows(); j++){
-                if(grid.getData()[i][j] == 1)
-                    blocks.set(i, new Rectangle(position.x - blockWidth * j, position.y - blockWidth * (i+1), blockWidth, blockWidth));
+                if(grid.getData()[i][j] == 1) {
+                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i + 1), blockWidth, blockWidth));
+                    rectNum++;
+                }
             }
         }
-
     }
 
     public void moveRight(){
+        int rectNum = 0;
+
         position.x += blockWidth;
+        for(int i = 0; i < grid.getRows(); i++){
+            for(int j = 0; j < grid.getRows(); j++){
+                if(grid.getData()[i][j] == 1) {
+                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i + 1), blockWidth, blockWidth));
+                    rectNum++;
+                }
+            }
+        }
     }
 
     public void moveLeft(){
+        int rectNum = 0;
+
         position.x -= blockWidth;
+        for(int i = 0; i < grid.getRows(); i++){
+            for(int j = 0; j < grid.getRows(); j++){
+                if(grid.getData()[i][j] == 1) {
+                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i + 1), blockWidth, blockWidth));
+                    rectNum++;
+                }
+            }
+        }
     }
 
     public Vector2 getPosition(){
@@ -191,6 +221,14 @@ public class Polyomino {
 
     public ArrayList<Rectangle> getBlocks() {
         return blocks;
+    }
+
+    public void setMoving(boolean moving){
+        this.moving = moving;
+    }
+
+    public boolean getMoving(){
+        return moving;
     }
 }
 
