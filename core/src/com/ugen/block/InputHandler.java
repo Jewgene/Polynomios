@@ -2,14 +2,16 @@ package com.ugen.block;
 
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Created by eugen_000 on 9/6/2016.
  */
 public class InputHandler implements InputProcessor {
+    GameScreen screen;
 
-    public InputHandler(){
-
+    public InputHandler(GameScreen screen){
+        this.screen = screen;
     }
 
     @Override
@@ -29,6 +31,7 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        screen.getRenderer().getCurrent().rotate();
         return false;
     }
 
@@ -39,7 +42,7 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
+       return false;
     }
 
     @Override

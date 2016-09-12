@@ -109,4 +109,8 @@ public class GameWorld {
     public void setRenderer(WorldRenderer renderer) {
         this.renderer = renderer;
     }
+
+    public int getGenerationCap() {
+        return generationCap;
+    }
 }

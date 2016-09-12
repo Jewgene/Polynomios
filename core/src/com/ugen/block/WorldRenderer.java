@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -28,8 +29,10 @@ public class WorldRenderer {
     private OrthographicCamera cam;
     private Viewport viewport;
     private ArrayList<Polyomino> Polyominoes;
+    private ArrayList<Polyomino> dead;
     private ArrayList<Color> colors;
     private ArrayList<Vector2> positions;
+    private ArrayList<Rectangle> tiles;
 
     private long timer;
     private long initTime = System.currentTimeMillis();
@@ -48,7 +51,8 @@ public class WorldRenderer {
         Polyominoes = world.getCurrentGeneration();
         colors = world.getColors();
         positions = world.getPositions();
-
+        tiles = new ArrayList<Rectangle>();
+        dead = new ArrayList<Polyomino>();
         batch = new SpriteBatch();
         shapeBatch = new ShapeRenderer();
         shapeBatch.setAutoShapeType(true);
@@ -62,10 +66,16 @@ public class WorldRenderer {
         height = cam.viewportHeight;
 
         first = Polyominoes.get(rand.nextInt(Polyominoes.size()));
-        first.setPosition(new Vector2(width / 2, height));
+        first.setPosition(new Vector2(width / 2, width));
 
         for(int i = 0; i < Polyominoes.size(); i++){
-            Polyominoes.get(i).setBlockWidth((int)width / 10);
+            Polyominoes.get(i).setBlockWidth(width / 10);
+        }
+
+        for(float i = 0; i < width; i += first.getBlockWidth()){
+            for(float j = 0; j < width; j += first.getBlockWidth()){
+                tiles.add(new Rectangle(j, i, first.getBlockWidth(), first.getBlockWidth()));
+            }
         }
     }
 
@@ -77,18 +87,40 @@ public class WorldRenderer {
         shapeBatch.begin(ShapeRenderer.ShapeType.Line);
         shapeBatch.setProjectionMatrix(cam.combined);
 
-        first.draw(shapeBatch, colors.get(Polyominoes.indexOf(first)), (int)first.getPosition().x, (int)first.getPosition().y);
+
         if(timer > 500){
             first.moveDown();
+            Gdx.app.log("DEBUG", first.getPosition().y + "");
             timer = 0;
             initTime = System.currentTimeMillis();
         }
 
-        if(first.getPosition().y < 0){
-            first = Polyominoes.get(rand.nextInt(Polyominoes.size()));
-            first.setPosition(new Vector2(width / 2, height));
+        for(int i = 0; i < dead.size(); i++){
+            for(int j = 0; j < first.getBlocks().size(); j++){
+                if(first.getBlocks().get(j).overlaps(dead.get(i).getBlocks().get(j)))
+                    first.moveUp();
+            }
         }
 
+        for(int i = 0; i < first.getBlocks().size(); i++){
+            if(first.getBlocks().get(i).getY() < 0) {
+                first.moveUp();
+                dead.add(first);
+                first = Polyominoes.get(rand.nextInt(Polyominoes.size()));
+                first.setPosition(new Vector2(width / 2, width));
+
+            }
+        }
+
+        shapeBatch.setColor(0.5f ,0.5f ,0.5f ,0.5f);
+        for(Rectangle rect : tiles){
+            shapeBatch.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+        }
+
+        for(int i = 0; i < dead.size(); i++)
+            dead.get(i).draw(shapeBatch, colors.get(Polyominoes.indexOf(dead.get(i))));
+
+        first.draw(shapeBatch, colors.get(Polyominoes.indexOf(first)));
         shapeBatch.end();
     }
 
@@ -98,5 +130,9 @@ public class WorldRenderer {
 
     public float getHeight(){
         return height;
+    }
+
+    public Polyomino getCurrent(){
+        return first;
     }
 }

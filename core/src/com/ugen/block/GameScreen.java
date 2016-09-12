@@ -1,12 +1,15 @@
 package com.ugen.block;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 
 /**
  * Created by eugen_000 on 9/3/2016.
  */
 public class GameScreen extends ScreenAdapter{
+
+    InputHandler handler;
 
     private PolyominoesGame game;
 
@@ -19,6 +22,8 @@ public class GameScreen extends ScreenAdapter{
         world = new GameWorld(game);
         renderer = new WorldRenderer(world);
         world.setRenderer(renderer);
+        handler = new InputHandler(this);
+        Gdx.input.setInputProcessor(handler);
     }
 
     public void update(float delta){
@@ -48,5 +53,17 @@ public class GameScreen extends ScreenAdapter{
     @Override
     public void dispose(){
         super.dispose();
+    }
+
+    public GameWorld getWorld() {
+        return world;
+    }
+
+    public PolyominoesGame getGame() {
+        return game;
+    }
+
+    public WorldRenderer getRenderer() {
+        return renderer;
     }
 }
