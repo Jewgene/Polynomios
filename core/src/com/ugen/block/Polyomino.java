@@ -11,10 +11,11 @@ import java.util.ArrayList;
 /**
  * Created by eugen_000 on 9/3/2016.
  */
-public class Polyomino {
+public class Polyomino implements Cloneable{
 
     float blockWidth;
     private boolean moving;
+    private int colorIndex;
 
     private ArrayList<Rectangle> blocks;
     private Matrix grid;
@@ -24,6 +25,15 @@ public class Polyomino {
 
     private int cellNum;
 
+    public Polyomino(Polyomino old){
+        this.colorIndex = old.getColorIndex();
+        this.blockWidth = old.getBlockWidth();
+        this.blocks = old.getBlocks();
+        this.grid = old.getGrid();
+        this.adjacents = old.getAdjacents();
+        this.children = old.getChildren();
+        this.position = old.getPosition();
+    }
 
     public Polyomino(int cellNum){
         grid = new Matrix(cellNum, cellNum);
@@ -76,7 +86,19 @@ public class Polyomino {
     }
 
     public void rotate(){
+        int rectNum = 0;
         this.grid = (grid.rotateClockwise());
+        //grid = grid.rotateClockwise();
+
+        for(int i = 0; i < grid.getRows(); i++){
+            for(int j = 0; j < grid.getRows(); j++){
+                if(grid.getData()[i][j] == 1) {
+                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i + 1), blockWidth, blockWidth));
+                    rectNum++;
+                }
+
+            }
+        }
     }
 
     public void draw(ShapeRenderer sr, Color color){
@@ -149,17 +171,16 @@ public class Polyomino {
 
             }
         }
-
-
     }
 
     public void moveDown(){
         int rectNum = 0;
         position.y -= blockWidth;
+
         for(int i = 0; i < grid.getRows(); i++){
             for(int j = 0; j < grid.getRows(); j++){
                 if(grid.getData()[i][j] == 1) {
-                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i + 1), blockWidth, blockWidth));
+                    blocks.get(rectNum).setY(blocks.get(rectNum).getY() - blockWidth);
                     rectNum++;
                 }
             }
@@ -172,7 +193,7 @@ public class Polyomino {
         for(int i = 0; i < grid.getRows(); i++){
             for(int j = 0; j < grid.getRows(); j++){
                 if(grid.getData()[i][j] == 1) {
-                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i + 1), blockWidth, blockWidth));
+                    blocks.get(rectNum).setY(blocks.get(rectNum).getY() + blockWidth);
                     rectNum++;
                 }
             }
@@ -186,7 +207,7 @@ public class Polyomino {
         for(int i = 0; i < grid.getRows(); i++){
             for(int j = 0; j < grid.getRows(); j++){
                 if(grid.getData()[i][j] == 1) {
-                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i + 1), blockWidth, blockWidth));
+                    blocks.get(rectNum).setX(blocks.get(rectNum).getX() + blockWidth);     //(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i + 1), blockWidth, blockWidth));
                     rectNum++;
                 }
             }
@@ -200,7 +221,7 @@ public class Polyomino {
         for(int i = 0; i < grid.getRows(); i++){
             for(int j = 0; j < grid.getRows(); j++){
                 if(grid.getData()[i][j] == 1) {
-                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i + 1), blockWidth, blockWidth));
+                    blocks.get(rectNum).setX(blocks.get(rectNum).getX() - blockWidth);
                     rectNum++;
                 }
             }
@@ -209,6 +230,10 @@ public class Polyomino {
 
     public Vector2 getPosition(){
         return position;
+    }
+
+    public ArrayList<Vector2> getAdjacents() {
+        return adjacents;
     }
 
     public void setBlockWidth(float blockWidth){
@@ -229,6 +254,14 @@ public class Polyomino {
 
     public boolean getMoving(){
         return moving;
+    }
+
+    public int getColorIndex() {
+        return colorIndex;
+    }
+
+    public void setColorIndex(int colorIndex) {
+        this.colorIndex = colorIndex;
     }
 }
 

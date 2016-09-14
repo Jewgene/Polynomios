@@ -62,7 +62,7 @@ public class GameWorld {
             green = (float) Math.sin((float)i * 6 / currentGeneration.size() + 1) * 0.5f + 0.5f;
             blue = (float) Math.sin((float)i * 6 /  currentGeneration.size() + 3) * 0.5f + 0.5f;
 
-
+            currentGeneration.get(i).setColorIndex(i);
             colors.add(new Color(red, green, blue, 1.0f));
         }
 

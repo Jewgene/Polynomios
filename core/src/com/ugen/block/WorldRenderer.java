@@ -65,7 +65,7 @@ public class WorldRenderer {
         width = cam.viewportWidth;
         height = cam.viewportHeight;
 
-        first = Polyominoes.get(rand.nextInt(Polyominoes.size()));
+        first = (Polyominoes.get(rand.nextInt(Polyominoes.size())));
         first.setPosition(new Vector2(width / 2, width));
 
         for(int i = 0; i < Polyominoes.size(); i++){
@@ -104,7 +104,7 @@ public class WorldRenderer {
                             Gdx.app.exit();
                         }
                         dead.add(first);
-                        first = Polyominoes.get(rand.nextInt(Polyominoes.size()));
+                        first = new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size())));
                         first.setPosition(new Vector2(width / 2, width));
                         break;
                     }
@@ -116,7 +116,7 @@ public class WorldRenderer {
             if(first.getBlocks().get(i).getY() < -first.getBlockWidth()) {
                 first.moveUp();
                 dead.add(first);
-                first = Polyominoes.get(rand.nextInt(Polyominoes.size()));
+                first = new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size())));
                 first.setPosition(new Vector2(width / 2, width));
                 break;
             }
@@ -128,9 +128,9 @@ public class WorldRenderer {
         }
 
         for(int i = 0; i < dead.size(); i++)
-            dead.get(i).draw(shapeBatch, colors.get(Polyominoes.indexOf(dead.get(i))));
+            dead.get(i).draw(shapeBatch, colors.get(dead.get(i).getColorIndex()));
 
-        first.draw(shapeBatch, colors.get(Polyominoes.indexOf(first)));
+        first.draw(shapeBatch, colors.get(first.getColorIndex()));
         shapeBatch.end();
     }
 
