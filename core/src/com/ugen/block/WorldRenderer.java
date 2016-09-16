@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -69,7 +70,7 @@ public class WorldRenderer {
         first.setPosition(new Vector2(width / 2, width));
 
         for(int i = 0; i < Polyominoes.size(); i++){
-            Polyominoes.get(i).setBlockWidth(width / 10);
+            Polyominoes.get(i).setBlockWidth(width / 20);
         }
 
         for(float i = 0; i < width; i += first.getBlockWidth()){
@@ -88,7 +89,7 @@ public class WorldRenderer {
         shapeBatch.setProjectionMatrix(cam.combined);
 
 
-        if(timer > 500){
+        if(timer > 200){
             first.moveDown();
             Gdx.app.log("DEBUG", first.getBlocks().size()+"");
             timer = 0;
@@ -113,7 +114,7 @@ public class WorldRenderer {
         }
 
         for(int i = 0; i < first.getBlocks().size(); i++){
-            if(first.getBlocks().get(i).getY() < -first.getBlockWidth()) {
+            if(first.getBlocks().get(i).getY() < 0) {
                 first.moveUp();
                 dead.add(first);
                 first = new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size())));

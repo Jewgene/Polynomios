@@ -31,8 +31,6 @@ public class PolyominoesGame extends Game {
 
 	}
 
-
-
 	@Override
 	public void render () {
 		super.render();
@@ -41,5 +39,9 @@ public class PolyominoesGame extends Game {
 	@Override
 	public void dispose () {
 		super.dispose();
+	}
+
+	public GameScreen getGameScreen(){
+		return gameScreen;
 	}
 }

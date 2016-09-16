@@ -10,6 +10,10 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class InputHandler implements InputProcessor {
     GameScreen screen;
+    float initX, initY;
+
+    private long time;
+    private boolean thing = false;
 
     public InputHandler(GameScreen screen){
         this.screen = screen;
@@ -33,30 +37,46 @@ public class InputHandler implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
+        if(System.currentTimeMillis() - time < 200 && thing) {
+            screen.getRenderer().getCurrent().rotate();
+            thing = false;
+        }
+
+        if(!thing)
+            thing = true;
+
+        initX = screen.getCam().viewportWidth * screenX / Gdx.graphics.getWidth();
+       // initY = screen.getCam().viewportHeight - screen.getCam().viewportHeight * screenY / Gdx.graphics.getHeight();
+        time = System.currentTimeMillis();
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        if(!screen.getRenderer().getCurrent().getMoving())
-            screen.getRenderer().getCurrent().rotate();
-        screen.getRenderer().getCurrent().setMoving(false);
+
         return false;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         float trueX = screen.getCam().viewportWidth * screenX / Gdx.graphics.getWidth();
-        float trueY = screen.getCam().viewportHeight - screen.getCam().viewportHeight * screenY / Gdx.graphics.getHeight();
+       // float trueY = screen.getCam().viewportHeight - screen.getCam().viewportHeight * screenY / Gdx.graphics.getHeight();
 
-        screen.getRenderer().getCurrent().setMoving(true);
-        if(trueX > screen.getRenderer().getCurrent().getPosition().x)
-            if(Math.abs(trueX - screen.getRenderer().getCurrent().getPosition().x) >= screen.getRenderer().getCurrent().getBlockWidth()){
+        if(trueX > initX) {
+            if (Math.abs(trueX - initX) >= screen.getRenderer().getCurrent().getBlockWidth()) {
                 screen.getRenderer().getCurrent().moveRight();
+                if(screen.getRenderer().getCurrent().getPosition().x > screen.getRenderer().getWidth())
+                    screen.getRenderer().getCurrent().moveLeft();
+                initX = trueX;
             }
-        if (trueX < screen.getRenderer().getCurrent().getPosition().x){
-            if(Math.abs(trueX - screen.getRenderer().getCurrent().getPosition().x) >= screen.getRenderer().getCurrent().getBlockWidth()){
+        }
+
+        if(trueX < initX){
+            if(Math.abs(trueX - initX) >= screen.getRenderer().getCurrent().getBlockWidth()){
                 screen.getRenderer().getCurrent().moveLeft();
+                if(screen.getRenderer().getCurrent().getPosition().x < screen.getRenderer().getCurrent().getBlockWidth())
+                    screen.getRenderer().getCurrent().moveRight();
+                initX = trueX;
             }
         }
 

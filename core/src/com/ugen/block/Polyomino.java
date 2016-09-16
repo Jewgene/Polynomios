@@ -96,7 +96,6 @@ public class Polyomino implements Cloneable{
                     blocks.set(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i + 1), blockWidth, blockWidth));
                     rectNum++;
                 }
-
             }
         }
     }

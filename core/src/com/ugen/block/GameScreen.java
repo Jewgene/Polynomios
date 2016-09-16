@@ -5,9 +5,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
-/**
- * Created by eugen_000 on 9/3/2016.
+ /* Created by eugen_000 on 9/3/2016.
  */
+
 public class GameScreen extends ScreenAdapter{
 
     InputHandler handler;
@@ -24,6 +24,7 @@ public class GameScreen extends ScreenAdapter{
         renderer = new WorldRenderer(world);
         world.setRenderer(renderer);
         handler = new InputHandler(this);
+
         Gdx.input.setInputProcessor(handler);
     }
 
@@ -71,4 +72,6 @@ public class GameScreen extends ScreenAdapter{
     public OrthographicCamera getCam(){
         return renderer.getCam();
     }
+
+
 }
