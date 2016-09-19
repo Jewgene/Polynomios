@@ -29,7 +29,7 @@ public class GameWorld {
 
     int posx = 50, posy = 200;
 
-    int generationCap = 4;
+    int generationCap = 3;
 
     public GameWorld(PolyominoesGame game){
         this.theGame = game;

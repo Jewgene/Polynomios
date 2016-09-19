@@ -73,7 +73,6 @@ final public class Matrix {
         A = this.transpose();
         boolean b = true;
 
-
         for(int i = 0; i < M; i++){
             for(int j = 0; j < N; j++){
                 A.data[i][j] = B.data[M - 1 - i][j];
@@ -82,7 +81,6 @@ final public class Matrix {
 
         while(!contains((A.data[0]), 1))
             A = A.moveUp();
-
 
         while(b) {
             for (int i = 0; i < N; i++) {
@@ -94,7 +92,6 @@ final public class Matrix {
                 break;
 
             A = A.moveLeft();
-
         }
 
         return A;
@@ -104,27 +101,28 @@ final public class Matrix {
         Matrix A;
         Matrix B = this.transpose();
         A = this.transpose();
-
-
-
         boolean b = true;
 
-        for(int i = 0; i < A.getRows(); i++)
-            for(int j = 0; j < A.getRows(); j++)
-                A.data[i][j] = B.data[B.getRows() - 1 - i][j];
+        for(int i = 0; i < M; i++){
+            for(int j = 0; j < N; j++){
+                A.data[i][j] = B.data[i][N - 1 - j];
+            }
+        }
 
-
-
-       /* while(!contains((A.data[0]), 1))
-            A.moveUp();
+        while(!contains((A.data[0]), 1))
+            A = A.moveUp();
 
         while(b) {
-            for (int i = 0; i < N; i++)
-                if(A.data[0][i] == 1)
+            for (int i = 0; i < N; i++) {
+                if (A.data[i][0] == 1)
                     b = false;
+            }
 
-            moveLeft();
-        }*/
+            if(!b)
+                break;
+
+            A = A.moveLeft();
+        }
 
         return A;
     }

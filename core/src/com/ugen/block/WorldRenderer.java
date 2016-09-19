@@ -35,10 +35,12 @@ public class WorldRenderer {
     private ArrayList<Vector2> positions;
     private ArrayList<Rectangle> tiles;
 
+    private Rectangle gameWindow;
+
     private long timer;
     private long initTime = System.currentTimeMillis();
 
-    float width, height;
+    float width, height, minX, maxX;
 
     Polyomino first;
 
@@ -66,21 +68,39 @@ public class WorldRenderer {
         width = cam.viewportWidth;
         height = cam.viewportHeight;
 
+        gameWindow = new Rectangle(width / 6, 0, 2 * width / 3, 4 * width / 3);
+
+
         first = (Polyominoes.get(rand.nextInt(Polyominoes.size())));
-        first.setPosition(new Vector2(width / 2, width));
+        first.setPosition(new Vector2(width / 2, 4 * width / 3));
 
         for(int i = 0; i < Polyominoes.size(); i++){
-            Polyominoes.get(i).setBlockWidth(width / 20);
+            Polyominoes.get(i).setBlockWidth(width / 15);
         }
 
-        for(float i = 0; i < width; i += first.getBlockWidth()){
-            for(float j = 0; j < width; j += first.getBlockWidth()){
-                tiles.add(new Rectangle(j, i, first.getBlockWidth(), first.getBlockWidth()));
+        for(float i = 0; i < 4 * width / 3; i += first.getBlockWidth()){
+            for(float j = 0; j < 2 * width / 3; j += first.getBlockWidth()){
+                tiles.add(new Rectangle(width / 6 + j, i, first.getBlockWidth(), first.getBlockWidth()));
             }
         }
+
+        minX = width / 6;
+        maxX = width /6 + 2 * width / 3;
     }
 
     public void render(float delta){
+
+        //BANISHED TO THE SHADOW REALM
+        if(dead.size() == 0){
+            first.setPosition(new Vector2(-420, -420));
+
+            dead.add(first);
+
+            first = new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size())));
+            first.setPosition(new Vector2(width / 2, 4 * width / 3));
+            Gdx.app.log("DEBUG", "ahhhhhhhhhhhhhhh");
+        }
+
         timer = System.currentTimeMillis() - initTime;
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -89,41 +109,35 @@ public class WorldRenderer {
         shapeBatch.setProjectionMatrix(cam.combined);
 
 
-        if(timer > 200){
+        if(timer > 300){
             first.moveDown();
             Gdx.app.log("DEBUG", first.getBlocks().size()+"");
             timer = 0;
             initTime = System.currentTimeMillis();
         }
 
-        for(int i = 0; i < dead.size(); i++){
-            for(int j = 0; j < first.getBlocks().size(); j++){
-                for(int ii = 0; ii < first.getBlocks().size(); ii++) {
-                    if (first.getBlocks().get(ii).overlaps(dead.get(i).getBlocks().get(j))) {
-                        first.moveUp();
-                        if(first.getBlocks().get(j).getY() >= width){
-                            Gdx.app.exit();
-                        }
-                        dead.add(first);
-                        first = new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size())));
-                        first.setPosition(new Vector2(width / 2, width));
-                        break;
-                    }
-                }
+        if(checkCollisions()){
+            first.moveUp();
+            if(first.getPosition().y >= 4 * width / 3){
+               // Gdx.app.();
             }
+            dead.add(first);
+            first = new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size())));
+            first.setPosition(new Vector2(width / 2, 4 * width / 3));
         }
 
-        for(int i = 0; i < first.getBlocks().size(); i++){
+        else
+            for(int i = 0; i < first.getBlocks().size(); i++){
             if(first.getBlocks().get(i).getY() < 0) {
                 first.moveUp();
                 dead.add(first);
                 first = new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size())));
-                first.setPosition(new Vector2(width / 2, width));
+                first.setPosition(new Vector2(width / 2, 4 * width / 3));
                 break;
             }
         }
 
-        shapeBatch.setColor(0.5f ,0.5f ,0.5f ,0.5f);
+        shapeBatch.setColor(0.25f ,0.25f ,0.25f ,0.25f);
         for(Rectangle rect : tiles){
             shapeBatch.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
         }
@@ -134,6 +148,28 @@ public class WorldRenderer {
         first.draw(shapeBatch, colors.get(first.getColorIndex()));
         shapeBatch.end();
     }
+
+    public void project(Polyomino p){
+
+    }
+
+    public boolean checkCollisions() {
+        boolean collided = false;
+
+        for (int i = 0; i < dead.size(); i++) {
+            for (int j = 0; j < first.getBlocks().size(); j++) {
+                for (int ii = 0; ii < first.getBlocks().size(); ii++) {
+                    if (first.getBlocks().get(ii).overlaps(dead.get(i).getBlocks().get(j))) {
+                        collided = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return collided;
+    }
+
 
     public float getWidth(){
         return width;
@@ -149,5 +185,13 @@ public class WorldRenderer {
 
     public OrthographicCamera getCam(){
         return cam;
+    }
+
+    public float getMinX() {
+        return minX;
+    }
+
+    public float getMaxX() {
+        return maxX;
     }
 }

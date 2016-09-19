@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * Created by eugen_000 on 9/3/2016.
  */
-public class Polyomino implements Cloneable{
+public class Polyomino {
 
     float blockWidth;
     private boolean moving;
@@ -28,11 +28,18 @@ public class Polyomino implements Cloneable{
     public Polyomino(Polyomino old){
         this.colorIndex = old.getColorIndex();
         this.blockWidth = old.getBlockWidth();
-        this.blocks = old.getBlocks();
+        //this.blocks = old.getBlocks();
         this.grid = old.getGrid();
         this.adjacents = old.getAdjacents();
         this.children = old.getChildren();
-        this.position = old.getPosition();
+        this.cellNum = old.getCellNum();
+
+        blocks = new ArrayList<Rectangle>();
+
+        for(int i = 0; i < cellNum - 1; i++){
+            blocks.add(new Rectangle());
+        }
+        //this.position = old.getPosition();
     }
 
     public Polyomino(int cellNum){
@@ -42,7 +49,7 @@ public class Polyomino implements Cloneable{
         adjacents = new ArrayList<Vector2>();
         position = new Vector2();
 
-        for(int i = 0; i < grid.getRows(); i++){
+        for(int i = 0; i < grid.getRows() - 1; i++){
             blocks.add(new Rectangle());
         }
 
@@ -58,7 +65,7 @@ public class Polyomino implements Cloneable{
         this.cellNum = getGrid().getRows();
         grid.put(1, 0, 0);
 
-        for(int i = 0; i < grid.getRows(); i++){
+        for(int i = 0; i < grid.getRows() - 1; i++){
             blocks.add(new Rectangle());
         }
     }
@@ -93,7 +100,22 @@ public class Polyomino implements Cloneable{
         for(int i = 0; i < grid.getRows(); i++){
             for(int j = 0; j < grid.getRows(); j++){
                 if(grid.getData()[i][j] == 1) {
-                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i + 1), blockWidth, blockWidth));
+                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i), blockWidth, blockWidth));
+                    rectNum++;
+                }
+            }
+        }
+    }
+
+    public void reverseRotate(){
+        int rectNum = 0;
+        this.grid = (grid.rotateCounterClockwise());
+        //grid = grid.rotateClockwise();
+
+        for(int i = 0; i < grid.getRows(); i++){
+            for(int j = 0; j < grid.getRows(); j++){
+                if(grid.getData()[i][j] == 1) {
+                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i), blockWidth, blockWidth));
                     rectNum++;
                 }
             }
@@ -107,7 +129,7 @@ public class Polyomino implements Cloneable{
                //dx.app.log("DEBUG", grid.getData()[i][j] + "");
 
                 if(grid.getData()[i][j] == 1){
-                    sr.rect(position.x + j * blockWidth,  position.y - (i+1) * blockWidth , blockWidth, blockWidth);
+                    sr.rect(position.x + j * blockWidth + .25f,  position.y - (i) * blockWidth + .25f, blockWidth - .5f, blockWidth - .5f);
                 }
             }
         }
@@ -161,13 +183,14 @@ public class Polyomino implements Cloneable{
     public void setPosition(Vector2 position){
         int rectNum = 0;
         this.position = position;
+
         for(int i = 0; i < grid.getRows(); i++){
             for(int j = 0; j < grid.getRows(); j++){
                 if(grid.getData()[i][j] == 1) {
-                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i + 1), blockWidth, blockWidth));
+                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j + .25f, position.y - blockWidth * (i) + .25f, blockWidth - .5f, blockWidth - .5f));
+
                     rectNum++;
                 }
-
             }
         }
     }
@@ -198,6 +221,8 @@ public class Polyomino implements Cloneable{
             }
         }
     }
+
+
 
     public void moveRight(){
         int rectNum = 0;

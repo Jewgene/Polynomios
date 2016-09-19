@@ -1,9 +1,7 @@
 package com.ugen.block;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Created by eugen_000 on 9/6/2016.
@@ -37,17 +35,26 @@ public class InputHandler implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-        if(System.currentTimeMillis() - time < 200 && thing) {
-            screen.getRenderer().getCurrent().rotate();
-            thing = false;
-        }
-
         if(!thing)
             thing = true;
+
+        if(System.currentTimeMillis() - time < 200 && thing) {
+            thing = false;
+            screen.getRenderer().getCurrent().rotate();
+
+            for(int i = 0; i < screen.getRenderer().getCurrent().getBlocks().size(); i++){
+                if(screen.getRenderer().getCurrent().getBlocks().get(i).getX() > screen.getRenderer().getMaxX())
+                    screen.getRenderer().getCurrent().reverseRotate();
+            }
+        }
 
         initX = screen.getCam().viewportWidth * screenX / Gdx.graphics.getWidth();
        // initY = screen.getCam().viewportHeight - screen.getCam().viewportHeight * screenY / Gdx.graphics.getHeight();
         time = System.currentTimeMillis();
+
+        if(screen.getRenderer().checkCollisions())
+            screen.getRenderer().getCurrent().reverseRotate();
+
         return false;
     }
 
@@ -65,17 +72,24 @@ public class InputHandler implements InputProcessor {
         if(trueX > initX) {
             if (Math.abs(trueX - initX) >= screen.getRenderer().getCurrent().getBlockWidth()) {
                 screen.getRenderer().getCurrent().moveRight();
-                if(screen.getRenderer().getCurrent().getPosition().x > screen.getRenderer().getWidth())
-                    screen.getRenderer().getCurrent().moveLeft();
+                for(int i = 0; i < screen.getRenderer().getCurrent().getBlocks().size(); i++) {
+                    if (screen.getRenderer().getCurrent().getBlocks().get(i).getX() > screen.getRenderer().getMaxX() || screen.getRenderer().checkCollisions())
+                        screen.getRenderer().getCurrent().moveLeft();
+                }
                 initX = trueX;
             }
         }
 
         if(trueX < initX){
             if(Math.abs(trueX - initX) >= screen.getRenderer().getCurrent().getBlockWidth()){
-                screen.getRenderer().getCurrent().moveLeft();
-                if(screen.getRenderer().getCurrent().getPosition().x < screen.getRenderer().getCurrent().getBlockWidth())
-                    screen.getRenderer().getCurrent().moveRight();
+                if(!(screen.getRenderer().getCurrent().getPosition().x - screen.getRenderer().getMinX() < .5f))
+                    screen.getRenderer().getCurrent().moveLeft();
+
+                else
+                    for(int i = 0; i < screen.getRenderer().getCurrent().getBlocks().size(); i++) {
+                    if (screen.getRenderer().getCurrent().getBlocks().get(i).getX() < screen.getRenderer().getMinX() - screen.getRenderer().getCurrent().getBlockWidth() || screen.getRenderer().checkCollisions())
+                        screen.getRenderer().getCurrent().moveRight();
+                }
                 initX = trueX;
             }
         }
