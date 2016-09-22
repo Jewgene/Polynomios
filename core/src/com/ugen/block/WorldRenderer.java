@@ -24,6 +24,7 @@ public class WorldRenderer {
     ShapeRenderer shapeBatch;
 
     Random rand;
+    Polyomino first;
 
     private GameWorld world;
 
@@ -33,7 +34,8 @@ public class WorldRenderer {
     private ArrayList<Polyomino> dead;
     private ArrayList<Color> colors;
     private ArrayList<Vector2> positions;
-    private ArrayList<Rectangle> tiles;
+    private ArrayList<ArrayList<Rectangle>> tiles;
+    private ArrayList<Rectangle> deadBlocks;
 
     private Rectangle gameWindow;
 
@@ -42,7 +44,6 @@ public class WorldRenderer {
 
     float width, height, minX, maxX;
 
-    Polyomino first;
 
     public WorldRenderer(GameWorld world){
         this.world = world;
@@ -54,8 +55,9 @@ public class WorldRenderer {
         Polyominoes = world.getCurrentGeneration();
         colors = world.getColors();
         positions = world.getPositions();
-        tiles = new ArrayList<Rectangle>();
+        tiles = new ArrayList<ArrayList<Rectangle>>();
         dead = new ArrayList<Polyomino>();
+        deadBlocks = new ArrayList<Rectangle>();
         batch = new SpriteBatch();
         shapeBatch = new ShapeRenderer();
         shapeBatch.setAutoShapeType(true);
@@ -79,8 +81,9 @@ public class WorldRenderer {
         }
 
         for(float i = 0; i < 4 * width / 3; i += first.getBlockWidth()){
+            tiles.add(new ArrayList<Rectangle>());
             for(float j = 0; j < 2 * width / 3; j += first.getBlockWidth()){
-                tiles.add(new Rectangle(width / 6 + j, i, first.getBlockWidth(), first.getBlockWidth()));
+                tiles.get((int)(i / first.getBlockWidth())).add(new Rectangle(width / 6 + j, i, first.getBlockWidth(), first.getBlockWidth()));
             }
         }
 
@@ -98,7 +101,6 @@ public class WorldRenderer {
 
             first = new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size())));
             first.setPosition(new Vector2(width / 2, 4 * width / 3));
-            Gdx.app.log("DEBUG", "ahhhhhhhhhhhhhhh");
         }
 
         timer = System.currentTimeMillis() - initTime;
@@ -121,25 +123,24 @@ public class WorldRenderer {
             if(first.getPosition().y >= 4 * width / 3){
                // Gdx.app.();
             }
-            dead.add(first);
-            first = new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size())));
-            first.setPosition(new Vector2(width / 2, 4 * width / 3));
+           killCurrent();
         }
 
         else
             for(int i = 0; i < first.getBlocks().size(); i++){
             if(first.getBlocks().get(i).getY() < 0) {
                 first.moveUp();
-                dead.add(first);
-                first = new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size())));
-                first.setPosition(new Vector2(width / 2, 4 * width / 3));
+                killCurrent();
                 break;
             }
         }
 
         shapeBatch.setColor(0.25f ,0.25f ,0.25f ,0.25f);
-        for(Rectangle rect : tiles){
-            shapeBatch.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+        
+        for(ArrayList<Rectangle> rectangles : tiles){
+            for(Rectangle rect : rectangles) {
+                shapeBatch.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+            }
         }
 
         for(int i = 0; i < dead.size(); i++)
@@ -147,6 +148,17 @@ public class WorldRenderer {
 
         first.draw(shapeBatch, colors.get(first.getColorIndex()));
         shapeBatch.end();
+    }
+
+    public void killCurrent(){
+        for(Rectangle rect : first.getBlocks()){
+            deadBlocks.add(rect);
+        }
+
+        dead.add(first);
+
+        first = new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size())));
+        first.setPosition(new Vector2(width / 2, 4 * width / 3));
     }
 
     public void drop(){
@@ -167,6 +179,10 @@ public class WorldRenderer {
         dead.add(first);
         first = new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size())));
         first.setPosition(new Vector2(width / 2, 4 * width / 3));
+    }
+
+    public void clearRows(){
+
     }
 
     public void project(Polyomino p){
