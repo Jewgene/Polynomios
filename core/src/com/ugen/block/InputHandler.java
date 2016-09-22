@@ -49,7 +49,7 @@ public class InputHandler implements InputProcessor {
         }
 
         initX = screen.getCam().viewportWidth * screenX / Gdx.graphics.getWidth();
-       // initY = screen.getCam().viewportHeight - screen.getCam().viewportHeight * screenY / Gdx.graphics.getHeight();
+        initY = screen.getCam().viewportHeight - screen.getCam().viewportHeight * screenY / Gdx.graphics.getHeight();
         time = System.currentTimeMillis();
 
         if(screen.getRenderer().checkCollisions())
@@ -67,7 +67,15 @@ public class InputHandler implements InputProcessor {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         float trueX = screen.getCam().viewportWidth * screenX / Gdx.graphics.getWidth();
-       // float trueY = screen.getCam().viewportHeight - screen.getCam().viewportHeight * screenY / Gdx.graphics.getHeight();
+        float trueY = screen.getCam().viewportHeight - screen.getCam().viewportHeight * screenY / Gdx.graphics.getHeight();
+      //  Gdx.app.log("asdfasdfasdf", trueY + ", " + initY);
+
+        if(trueY < initY){
+            if(Math.abs(trueY - initY) >= 6 * screen.getRenderer().getCurrent().getBlockWidth()){
+                screen.getRenderer().drop();
+                initY = trueY;
+            }
+        }
 
         if(trueX > initX) {
             if (Math.abs(trueX - initX) >= screen.getRenderer().getCurrent().getBlockWidth()) {

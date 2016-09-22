@@ -100,7 +100,7 @@ public class Polyomino {
         for(int i = 0; i < grid.getRows(); i++){
             for(int j = 0; j < grid.getRows(); j++){
                 if(grid.getData()[i][j] == 1) {
-                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i), blockWidth, blockWidth));
+                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j + .25f, position.y - blockWidth * (i) + .25f, blockWidth - .5f, blockWidth - .5f));
                     rectNum++;
                 }
             }
@@ -115,7 +115,7 @@ public class Polyomino {
         for(int i = 0; i < grid.getRows(); i++){
             for(int j = 0; j < grid.getRows(); j++){
                 if(grid.getData()[i][j] == 1) {
-                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i), blockWidth, blockWidth));
+                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j + .25f, position.y - blockWidth * (i) + .25f, blockWidth - .5f, blockWidth - .5f));
                     rectNum++;
                 }
             }
@@ -124,7 +124,11 @@ public class Polyomino {
 
     public void draw(ShapeRenderer sr, Color color){
         sr.setColor(color);
-        for(int i = 0; i < grid.getRows(); i++){
+
+        for(Rectangle rect : blocks){
+            sr.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+        }
+        /*for(int i = 0; i < grid.getRows(); i++){
             for(int j = 0; j < grid.getRows(); j++){
                //dx.app.log("DEBUG", grid.getData()[i][j] + "");
 
@@ -132,7 +136,7 @@ public class Polyomino {
                     sr.rect(position.x + j * blockWidth + .25f,  position.y - (i) * blockWidth + .25f, blockWidth - .5f, blockWidth - .5f);
                 }
             }
-        }
+        }*/
     }
 
     public int getCellNum(){
@@ -202,7 +206,7 @@ public class Polyomino {
         for(int i = 0; i < grid.getRows(); i++){
             for(int j = 0; j < grid.getRows(); j++){
                 if(grid.getData()[i][j] == 1) {
-                    blocks.get(rectNum).setY(blocks.get(rectNum).getY() - blockWidth);
+                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j + .25f, position.y - blockWidth * (i) + .25f, blockWidth - .5f, blockWidth - .5f));
                     rectNum++;
                 }
             }
@@ -215,7 +219,7 @@ public class Polyomino {
         for(int i = 0; i < grid.getRows(); i++){
             for(int j = 0; j < grid.getRows(); j++){
                 if(grid.getData()[i][j] == 1) {
-                    blocks.get(rectNum).setY(blocks.get(rectNum).getY() + blockWidth);
+                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j + .25f, position.y - blockWidth * (i) + .25f, blockWidth - .5f, blockWidth - .5f));
                     rectNum++;
                 }
             }
@@ -231,7 +235,7 @@ public class Polyomino {
         for(int i = 0; i < grid.getRows(); i++){
             for(int j = 0; j < grid.getRows(); j++){
                 if(grid.getData()[i][j] == 1) {
-                    blocks.get(rectNum).setX(blocks.get(rectNum).getX() + blockWidth);     //(rectNum, new Rectangle(position.x + blockWidth * j, position.y - blockWidth * (i + 1), blockWidth, blockWidth));
+                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j + .25f, position.y - blockWidth * (i) + .25f, blockWidth - .5f, blockWidth - .5f));
                     rectNum++;
                 }
             }
@@ -245,7 +249,7 @@ public class Polyomino {
         for(int i = 0; i < grid.getRows(); i++){
             for(int j = 0; j < grid.getRows(); j++){
                 if(grid.getData()[i][j] == 1) {
-                    blocks.get(rectNum).setX(blocks.get(rectNum).getX() - blockWidth);
+                    blocks.set(rectNum, new Rectangle(position.x + blockWidth * j + .25f, position.y - blockWidth * (i) + .25f, blockWidth - .5f, blockWidth - .5f));
                     rectNum++;
                 }
             }

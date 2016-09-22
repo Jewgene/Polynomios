@@ -149,6 +149,26 @@ public class WorldRenderer {
         shapeBatch.end();
     }
 
+    public void drop(){
+        boolean b = false;
+
+        while(!checkCollisions()){
+            for(int i = 0; i < first.getBlocks().size(); i++) {
+                if(!(first.getBlocks().get(i).getY() > 0))
+                    b = true;
+            }
+            if(b)
+                break;
+            else
+                first.moveDown();
+        }
+
+        first.moveUp();
+        dead.add(first);
+        first = new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size())));
+        first.setPosition(new Vector2(width / 2, 4 * width / 3));
+    }
+
     public void project(Polyomino p){
 
     }
