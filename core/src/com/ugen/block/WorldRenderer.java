@@ -113,7 +113,7 @@ public class WorldRenderer {
 
         if(timer > 300){
             first.moveDown();
-            Gdx.app.log("DEBUG", first.getBlocks().size()+"");
+
             timer = 0;
             initTime = System.currentTimeMillis();
         }
@@ -128,15 +128,17 @@ public class WorldRenderer {
 
         else
             for(int i = 0; i < first.getBlocks().size(); i++){
-            if(first.getBlocks().get(i).getY() < 0) {
-                first.moveUp();
-                killCurrent();
-                break;
+                if(first.getBlocks().get(i).getY() < 0) {
+                    first.moveUp();
+                    killCurrent();
+                    break;
+                }
             }
-        }
+
+        clearRows();
 
         shapeBatch.setColor(0.25f ,0.25f ,0.25f ,0.25f);
-        
+
         for(ArrayList<Rectangle> rectangles : tiles){
             for(Rectangle rect : rectangles) {
                 shapeBatch.rect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
@@ -182,7 +184,31 @@ public class WorldRenderer {
     }
 
     public void clearRows(){
+        boolean b = true;
 
+        for(int i = 0; i < tiles.size(); i++){
+            for(int j = 0; j < tiles.get(i).size(); j++){
+                //Gdx.app.log("DEBUG", tiles.get(i).get(j).getX() + "");
+
+                for(int ii = 0; ii < deadBlocks.size(); ii++){
+                    if(!tiles.get(i).get(j).overlaps(deadBlocks.get(ii))){
+                        //Gdx.app.log("DEBUG", "DON'T CLEAR");
+                        b = false;
+                        break;
+                    }
+                }
+
+                Gdx.app.log("DEBUG", b + "");
+
+                if(!b){
+                    break;
+                }
+            }
+
+            if(b){
+               // Gdx.app.log("DEBUG", "CLEAR");
+            }
+        }
     }
 
     public void project(Polyomino p){
