@@ -49,7 +49,7 @@ public class GameScreen extends ScreenAdapter{
 
     @Override
     public void resume(){
-        super.resume();
+        Gdx.input.setInputProcessor(handler);
     }
 
     @Override

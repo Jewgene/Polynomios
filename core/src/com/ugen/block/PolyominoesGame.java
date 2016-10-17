@@ -19,16 +19,22 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
+import javax.swing.text.html.Option;
+
 public class PolyominoesGame extends Game {
 	GameScreen gameScreen;
-
+	MainMenu mainMenu;
+	OptionsScreen optionsScreen;
 
 
 	@Override
 	public void create () {
-		gameScreen = new GameScreen(this);
-		setScreen(gameScreen);
+		AssetManager.load();
 
+		gameScreen = new GameScreen(this);
+		mainMenu = new MainMenu(this);
+		optionsScreen = new OptionsScreen(this);
+		setScreen(mainMenu);
 	}
 
 	@Override
@@ -43,5 +49,19 @@ public class PolyominoesGame extends Game {
 
 	public GameScreen getGameScreen(){
 		return gameScreen;
+	}
+
+	public void changeScreen(int i){
+		switch(i){
+			case 0:
+				setScreen(mainMenu);
+				break;
+			case 1:
+				setScreen(gameScreen);
+				break;
+			case 2:
+				setScreen(optionsScreen);
+				break;
+		}
 	}
 }

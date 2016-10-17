@@ -198,7 +198,7 @@ public class WorldRenderer {
                     }
                 }
 
-                Gdx.app.log("DEBUG", b + "");
+                //Gdx.app.log("DEBUG", b + "");
 
                 if(!b){
                     break;
@@ -206,7 +206,7 @@ public class WorldRenderer {
             }
 
             if(b){
-               // Gdx.app.log("DEBUG", "CLEAR");
+                Gdx.app.log("DEBUG", b + "CLEAR");
             }
         }
     }

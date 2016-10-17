@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
@@ -45,6 +46,27 @@ public class ButtonSkin extends Skin{
         style.up = newDrawable("white", Color.BLUE);
         style.checked = newDrawable("white", Color.BLUE);
         style.down = newDrawable("white", Color.RED);
+
+        BitmapFont font = new BitmapFont();
+        font.getData().setScale(.5f);
+        style.font = font;
+        add("default", style);
+    }
+
+    public ButtonSkin(String fileName, int width, int height, int x, int y){
+        Texture texture = new Texture(fileName);
+        TextureRegion up = new TextureRegion(texture, x ,y ,width, height);
+        TextureRegion down = new TextureRegion(texture, x + width, y, width, height);
+
+        Skin skin = new Skin();
+        skin.add("up", up);
+        skin.add("down", down);
+
+        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
+
+        style.up = newDrawable(skin.getDrawable("up"));
+        style.checked = newDrawable(skin.getDrawable("up"));
+        style.down = newDrawable(skin.getDrawable("down"));
 
         BitmapFont font = new BitmapFont();
         font.getData().setScale(.5f);
