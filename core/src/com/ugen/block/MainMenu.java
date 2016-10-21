@@ -63,7 +63,7 @@ public class MainMenu extends ScreenAdapter {
         optionsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.changeScreen(1);
+                game.changeScreen(2);
             }
         });
 

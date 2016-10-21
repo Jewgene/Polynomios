@@ -48,6 +48,11 @@ public class GameScreen extends ScreenAdapter{
     }
 
     @Override
+    public void show(){
+        Gdx.input.setInputProcessor(handler);
+    }
+
+    @Override
     public void resume(){
         Gdx.input.setInputProcessor(handler);
     }
