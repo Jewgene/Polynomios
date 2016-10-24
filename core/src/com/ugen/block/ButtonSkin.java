@@ -53,7 +53,7 @@ public class ButtonSkin extends Skin{
         add("default", style);
     }
 
-    public ButtonSkin(String fileName, int width, int height, int x, int y){
+    public ButtonSkin(String fileName, int width, int height, int x, int y, boolean toggleable){
         Texture texture = new Texture(fileName);
         TextureRegion up = new TextureRegion(texture, x ,y ,width, height);
         TextureRegion down = new TextureRegion(texture, x + width, y, width, height);
@@ -65,8 +65,13 @@ public class ButtonSkin extends Skin{
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
 
         style.up = newDrawable(skin.getDrawable("up"));
-        style.checked = newDrawable(skin.getDrawable("up"));
         style.down = newDrawable(skin.getDrawable("down"));
+
+        if(toggleable)
+            style.checked = newDrawable(skin.getDrawable("down"));
+        else
+            style.checked = newDrawable(skin.getDrawable("up"));
+
 
         BitmapFont font = new BitmapFont();
         font.getData().setScale(.5f);

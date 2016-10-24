@@ -25,6 +25,7 @@ public class OptionsScreen extends ScreenAdapter{
     private Stage stage;
     private Table container, table;
     Skin skin;
+    Skin toggleSkin;
 
     int degrees[] = {3, 4, 5, 6, 7, 8};
     ScrollPane scroll;
@@ -50,6 +51,7 @@ public class OptionsScreen extends ScreenAdapter{
         };
 
         skin = AssetManager.getButtonSkin();
+        toggleSkin = AssetManager.getToggleButtonSkin();
 
         buttons = new ArrayList<TextButton>();
 
@@ -62,16 +64,16 @@ public class OptionsScreen extends ScreenAdapter{
 
         scroll = new ScrollPane(table);
 
-        for(int i : degrees){
-            final TextButton button = new TextButton(i + "", skin);
+        for(final int i : degrees){
+            final TextButton button = new TextButton(i + "", toggleSkin);
+
             button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    button.setChecked(true);
+                    game.getGameScreen().getWorld().getPrefs().putInteger("degree", i);
                 }
             });
 
-            button.setScale(0.5f, 0.5f);
             buttons.add(button);
             table.add(button).minSize(30).space(2).expandX();
             table.row();

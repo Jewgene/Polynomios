@@ -1,6 +1,7 @@
 package com.ugen.block;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -13,6 +14,8 @@ import java.util.Arrays;
  */
 public class GameWorld {
     final PolyominoesGame theGame;
+
+    private Preferences prefs;
 
     WorldRenderer renderer;
 
@@ -29,7 +32,7 @@ public class GameWorld {
 
     int posx = 50, posy = 200;
 
-    int generationCap = 3;
+    int generationCap = 6;
 
     public GameWorld(PolyominoesGame game){
         this.theGame = game;
@@ -39,23 +42,13 @@ public class GameWorld {
         colors = new ArrayList<Color>();
         positions = new ArrayList<Vector2>();
         first = new Polyomino();
+        prefs = Gdx.app.getPreferences("UgenPrefs");
 
-        currentGeneration.add(first);
-
-        for(int ii = 0; ii < generationCap; ii++) {
-            for (int i = 0; i < currentGeneration.size(); i++){
-                currentGeneration.get(i).rotate();
-                currentGeneration.get(i).giveBirth();
-                for(int j = 0; j < currentGeneration.get(i).getChildren().size(); j++)
-                    nextGeneration.add(currentGeneration.get(i).getChildren().get(j));
-            }
-
-            currentGeneration.clear();
-            for(int i = 0; i < nextGeneration.size(); i++)
-                currentGeneration.add(nextGeneration.get(i));
-            nextGeneration.clear();
+        if(prefs.contains("degree")){
+            generationCap = prefs.getInteger("degree") - 1;
         }
-        removeDuplicates(currentGeneration);
+
+        generatePolyominoes();
 
         for(int i = 0; i < currentGeneration.size(); i++){
             red = (float) Math.sin((float)i * 6 / currentGeneration.size()) * 0.5f + 0.5f;
@@ -76,6 +69,27 @@ public class GameWorld {
             positions.add(new Vector2(posx, posy));
             posx += 250;
         }
+    }
+
+    public void generatePolyominoes(){
+        currentGeneration.clear();
+
+        currentGeneration.add(first);
+
+        for(int ii = 0; ii < generationCap; ii++) {
+            for (int i = 0; i < currentGeneration.size(); i++){
+                currentGeneration.get(i).rotate();
+                currentGeneration.get(i).giveBirth();
+                for(int j = 0; j < currentGeneration.get(i).getChildren().size(); j++)
+                    nextGeneration.add(currentGeneration.get(i).getChildren().get(j));
+            }
+
+            currentGeneration.clear();
+            for(int i = 0; i < nextGeneration.size(); i++)
+                currentGeneration.add(nextGeneration.get(i));
+            nextGeneration.clear();
+        }
+        removeDuplicates(currentGeneration);
     }
 
     public void removeDuplicates(ArrayList<Polyomino> children){
@@ -114,5 +128,9 @@ public class GameWorld {
 
     public int getGenerationCap() {
         return generationCap;
+    }
+
+    public Preferences getPrefs(){
+        return prefs;
     }
 }

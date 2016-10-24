@@ -232,6 +232,13 @@ public class WorldRenderer {
         return collided;
     }
 
+    public ArrayList<Polyomino> getDead() {
+        return dead;
+    }
+
+    public ArrayList<Rectangle> getDeadBlocks() {
+        return deadBlocks;
+    }
 
     public float getWidth(){
         return width;
