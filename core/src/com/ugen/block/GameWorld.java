@@ -24,7 +24,6 @@ public class GameWorld {
     private ArrayList<Polyomino> currentGeneration;
     private ArrayList<Polyomino> nextGeneration;
     private ArrayList<Color> colors;
-    private ArrayList<Vector2> positions;
 
     float red;
     float green;
@@ -32,7 +31,7 @@ public class GameWorld {
 
     int posx = 50, posy = 200;
 
-    int generationCap = 6;
+    int generationCap;
 
     public GameWorld(PolyominoesGame game){
         this.theGame = game;
@@ -40,7 +39,6 @@ public class GameWorld {
         currentGeneration = new ArrayList<Polyomino>();
         nextGeneration = new ArrayList<Polyomino>();
         colors = new ArrayList<Color>();
-        positions = new ArrayList<Vector2>();
         first = new Polyomino();
         prefs = Gdx.app.getPreferences("UgenPrefs");
 
@@ -48,6 +46,7 @@ public class GameWorld {
             generationCap = prefs.getInteger("degree") - 1;
         }
 
+        generationCap = theGame.getGameScreen().getGenerationCap();
         generatePolyominoes();
 
         for(int i = 0; i < currentGeneration.size(); i++){
@@ -57,17 +56,6 @@ public class GameWorld {
 
             currentGeneration.get(i).setColorIndex(i);
             colors.add(new Color(red, green, blue, 1.0f));
-        }
-
-        for(int i = 0; i < currentGeneration.size(); i++){
-
-            if(posx > 880){
-                posx = 50;
-                posy += 250;
-            }
-
-            positions.add(new Vector2(posx, posy));
-            posx += 250;
         }
     }
 
@@ -108,16 +96,16 @@ public class GameWorld {
 
     }
 
+    public void setGenerationCap(int generationCap){
+        this.generationCap = generationCap;
+    }
+
     public ArrayList<Polyomino> getCurrentGeneration() {
         return currentGeneration;
     }
 
     public ArrayList<Color> getColors() {
         return colors;
-    }
-
-    public ArrayList<Vector2> getPositions() {
-        return positions;
     }
 
     public void setRenderer(WorldRenderer renderer) {

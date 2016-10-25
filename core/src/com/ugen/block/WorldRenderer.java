@@ -54,7 +54,7 @@ public class WorldRenderer {
 
         Polyominoes = world.getCurrentGeneration();
         colors = world.getColors();
-        positions = world.getPositions();
+        //positions = world.getPositions();
         tiles = new ArrayList<ArrayList<Rectangle>>();
         dead = new ArrayList<Polyomino>();
         deadBlocks = new ArrayList<Rectangle>();
@@ -107,7 +107,7 @@ public class WorldRenderer {
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        shapeBatch.begin(ShapeRenderer.ShapeType.Line);
+        shapeBatch.begin(ShapeRenderer.ShapeType.Filled);
         shapeBatch.setProjectionMatrix(cam.combined);
 
 
@@ -137,6 +137,16 @@ public class WorldRenderer {
 
         clearRows();
 
+        for(int i = 0; i < dead.size(); i++)
+            dead.get(i).draw(shapeBatch, colors.get(dead.get(i).getColorIndex()));
+
+        first.draw(shapeBatch, colors.get(first.getColorIndex()));
+
+        shapeBatch.end();
+
+
+        shapeBatch.begin(ShapeRenderer.ShapeType.Line);
+
         shapeBatch.setColor(0.25f ,0.25f ,0.25f ,0.25f);
 
         for(ArrayList<Rectangle> rectangles : tiles){
@@ -145,10 +155,6 @@ public class WorldRenderer {
             }
         }
 
-        for(int i = 0; i < dead.size(); i++)
-            dead.get(i).draw(shapeBatch, colors.get(dead.get(i).getColorIndex()));
-
-        first.draw(shapeBatch, colors.get(first.getColorIndex()));
         shapeBatch.end();
     }
 
@@ -234,6 +240,14 @@ public class WorldRenderer {
 
     public ArrayList<Polyomino> getDead() {
         return dead;
+    }
+
+    public void reset(){
+        dead.clear();
+        deadBlocks.clear();
+        Polyominoes = world.getCurrentGeneration();
+        first = new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size())));
+        first.setPosition(new Vector2(width / 2, 4 * width / 3));
     }
 
     public ArrayList<Rectangle> getDeadBlocks() {

@@ -17,15 +17,11 @@ public class GameScreen extends ScreenAdapter{
     private GameWorld world;
     private WorldRenderer renderer;
 
+    private int generationCap = 3;
+
+
     public GameScreen (PolyominoesGame game){
         this.game = game;
-
-        world = new GameWorld(game);
-        renderer = new WorldRenderer(world);
-        world.setRenderer(renderer);
-        handler = new InputHandler(this);
-
-        Gdx.input.setInputProcessor(handler);
     }
 
     public void update(float delta){
@@ -49,6 +45,11 @@ public class GameScreen extends ScreenAdapter{
 
     @Override
     public void show(){
+        world = new GameWorld(game);
+        renderer = new WorldRenderer(world);
+        world.setRenderer(renderer);
+        handler = new InputHandler(this);
+
         Gdx.input.setInputProcessor(handler);
     }
 
@@ -79,4 +80,11 @@ public class GameScreen extends ScreenAdapter{
     }
 
 
+    public int getGenerationCap() {
+        return generationCap;
+    }
+
+    public void setGenerationCap(int generationCap) {
+        this.generationCap = generationCap;
+    }
 }
