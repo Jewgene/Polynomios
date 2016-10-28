@@ -52,8 +52,10 @@ public class InputHandler implements InputProcessor {
         initY = screen.getCam().viewportHeight - screen.getCam().viewportHeight * screenY / Gdx.graphics.getHeight();
         time = System.currentTimeMillis();
 
-        if(screen.getRenderer().checkCollisions())
+        if(screen.getRenderer().checkCollisions(screen.getRenderer().getCurrent()))
             screen.getRenderer().getCurrent().reverseRotate();
+
+        //screen.getRenderer().project(screen.getRenderer().getCurrent());
 
         return false;
     }
@@ -71,7 +73,7 @@ public class InputHandler implements InputProcessor {
       //  Gdx.app.log("asdfasdfasdf", trueY + ", " + initY);
 
         if(trueY < initY){
-            if(Math.abs(trueY - initY) >= 6 * screen.getRenderer().getCurrent().getBlockWidth()){
+            if(Math.abs(trueY - initY) >= screen.getRenderer().getHeight() / 4){
                 screen.getRenderer().drop();
                 initY = trueY;
             }
@@ -81,7 +83,7 @@ public class InputHandler implements InputProcessor {
             if (Math.abs(trueX - initX) >= screen.getRenderer().getCurrent().getBlockWidth()) {
                 screen.getRenderer().getCurrent().moveRight();
                 for(int i = 0; i < screen.getRenderer().getCurrent().getBlocks().size(); i++) {
-                    if (screen.getRenderer().getCurrent().getBlocks().get(i).getX() > screen.getRenderer().getMaxX() || screen.getRenderer().checkCollisions())
+                    if (screen.getRenderer().getCurrent().getBlocks().get(i).getX() > screen.getRenderer().getMaxX() || screen.getRenderer().checkCollisions(screen.getRenderer().getCurrent()))
                         screen.getRenderer().getCurrent().moveLeft();
                 }
                 initX = trueX;
@@ -95,12 +97,14 @@ public class InputHandler implements InputProcessor {
 
                 else
                     for(int i = 0; i < screen.getRenderer().getCurrent().getBlocks().size(); i++) {
-                    if (screen.getRenderer().getCurrent().getBlocks().get(i).getX() < screen.getRenderer().getMinX() - screen.getRenderer().getCurrent().getBlockWidth() || screen.getRenderer().checkCollisions())
+                    if (screen.getRenderer().getCurrent().getBlocks().get(i).getX() < screen.getRenderer().getMinX() - screen.getRenderer().getCurrent().getBlockWidth() || screen.getRenderer().checkCollisions(screen.getRenderer().getCurrent()))
                         screen.getRenderer().getCurrent().moveRight();
                 }
                 initX = trueX;
             }
         }
+
+        //screen.getRenderer().project(screen.getRenderer().getCurrent());
 
         return false;
     }

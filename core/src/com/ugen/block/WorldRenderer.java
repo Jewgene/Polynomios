@@ -44,6 +44,8 @@ public class WorldRenderer {
 
     float width, height, minX, maxX;
 
+    private int tileNum;
+
 
     public WorldRenderer(GameWorld world){
         this.world = world;
@@ -62,6 +64,8 @@ public class WorldRenderer {
         shapeBatch = new ShapeRenderer();
         shapeBatch.setAutoShapeType(true);
 
+        tileNum = Polyominoes.get(0).getCellNum();
+
         cam = new OrthographicCamera(1.0f, (float)Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth());
         viewport = new ExtendViewport(108, 192, cam);
         viewport.apply();
@@ -77,7 +81,7 @@ public class WorldRenderer {
         first.setPosition(new Vector2(width / 2, 4 * width / 3));
 
         for(int i = 0; i < Polyominoes.size(); i++){
-            Polyominoes.get(i).setBlockWidth(width / 15);
+            Polyominoes.get(i).setBlockWidth(width / (15 + 3 * (tileNum - 3)));
         }
 
         for(float i = 0; i < 4 * width / 3; i += first.getBlockWidth()){
@@ -118,7 +122,7 @@ public class WorldRenderer {
             initTime = System.currentTimeMillis();
         }
 
-        if(checkCollisions()){
+        if(checkCollisions(first)){
             first.moveUp();
             if(first.getPosition().y >= 4 * width / 3){
                // Gdx.app.();
@@ -172,7 +176,7 @@ public class WorldRenderer {
     public void drop(){
         boolean b = false;
 
-        while(!checkCollisions()){
+        while(!checkCollisions(first)){
             for(int i = 0; i < first.getBlocks().size(); i++) {
                 if(!(first.getBlocks().get(i).getY() > 0))
                     b = true;
@@ -218,16 +222,38 @@ public class WorldRenderer {
     }
 
     public void project(Polyomino p){
+        Polyomino temp = new Polyomino(p);
+        temp.setPosition(p.getPosition());
 
+        boolean b = false;
+
+        while(!checkCollisions(temp)){
+            for(int i = 0; i < temp.getBlocks().size(); i++) {
+                if(!(temp.getBlocks().get(i).getY() > 0))
+                    b = true;
+            }
+            if(b)
+                break;
+            else
+                temp.moveDown();
+        }
+
+        temp.moveUp();
+
+        shapeBatch.begin(ShapeRenderer.ShapeType.Filled);
+
+        temp.draw(shapeBatch, Color.BLUE);
+
+        shapeBatch.end();
     }
 
-    public boolean checkCollisions() {
+    public boolean checkCollisions(Polyomino p) {
         boolean collided = false;
 
         for (int i = 0; i < dead.size(); i++) {
-            for (int j = 0; j < first.getBlocks().size(); j++) {
-                for (int ii = 0; ii < first.getBlocks().size(); ii++) {
-                    if (first.getBlocks().get(ii).overlaps(dead.get(i).getBlocks().get(j))) {
+            for (int j = 0; j < p.getBlocks().size(); j++) {
+                for (int ii = 0; ii < p.getBlocks().size(); ii++) {
+                    if (p.getBlocks().get(ii).overlaps(dead.get(i).getBlocks().get(j))) {
                         collided = true;
                         break;
                     }
