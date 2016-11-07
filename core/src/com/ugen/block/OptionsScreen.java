@@ -110,5 +110,6 @@ public class OptionsScreen extends ScreenAdapter{
     @Override
     public void dispose(){
         stage.dispose();
+
     }
 }

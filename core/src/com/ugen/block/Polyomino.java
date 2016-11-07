@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by eugen_000 on 9/3/2016.
@@ -84,12 +85,22 @@ public class Polyomino {
                         child.getGrid().put(1, j, a);
                 }
             }
-           // Gdx.app.log("DEBUG", (int)adjacents.get(i).x + " , " + adjacents.get(i).y + " AHHHHHHHHHHHHHHHHHH");
+             // Gdx.app.log("DEBUG", (int)adjacents.get(i).x + " , " + adjacents.get(i).y + " AHHHHHHHHHHHHHHHHHH");
 
             child.grid.put(1, (int)adjacents.get(i).x, (int)adjacents.get(i).y);
 
             children.add(child);
         }
+
+        /*for(int i = 0; i < children.size(); i++){
+            for(int j = 0; j < children.size(); j++){
+                if(j != i){
+                    if(Arrays.equals(children.get(i).getGrid().getData(), children.get(j).getGrid().getData())){
+                        children.remove(i);
+                    }
+                }
+            }
+        }*/
     }
 
     public void rotate(){

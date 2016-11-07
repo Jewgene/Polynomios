@@ -36,7 +36,7 @@ public class WorldRenderer {
     private ArrayList<Vector2> positions;
     private ArrayList<ArrayList<Rectangle>> tiles;
     private ArrayList<Rectangle> deadBlocks;
-
+    private ArrayList<PolyominoContainer> containers;
     private Rectangle gameWindow;
 
     private long timer;
@@ -62,6 +62,8 @@ public class WorldRenderer {
         deadBlocks = new ArrayList<Rectangle>();
         batch = new SpriteBatch();
         shapeBatch = new ShapeRenderer();
+        containers = new ArrayList<PolyominoContainer>();
+
         shapeBatch.setAutoShapeType(true);
 
         tileNum = Polyominoes.get(0).getCellNum();
@@ -93,6 +95,16 @@ public class WorldRenderer {
 
         minX = width / 6;
         maxX = width /6 + 2 * width / 3;
+
+        for(int i = 0; i < 5; i++){
+            containers.add(new PolyominoContainer());
+        }
+
+        for(PolyominoContainer container : containers){
+            container.setHeight(width / 6);
+            container.setWidth(width / 6);
+            container.setPolyomino(new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size()))));
+        }
     }
 
     public void render(float delta){
@@ -103,7 +115,9 @@ public class WorldRenderer {
 
             dead.add(first);
 
-            first = new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size())));
+            first = new Polyomino(new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size()))));
+
+
             first.setPosition(new Vector2(width / 2, 4 * width / 3));
         }
 
@@ -139,7 +153,7 @@ public class WorldRenderer {
                 }
             }
 
-        clearRows();
+        //clearRows();
 
         for(int i = 0; i < dead.size(); i++)
             dead.get(i).draw(shapeBatch, colors.get(dead.get(i).getColorIndex()));
@@ -150,6 +164,10 @@ public class WorldRenderer {
 
 
         shapeBatch.begin(ShapeRenderer.ShapeType.Line);
+
+        for(int i = 0; i < containers.size(); i++) {
+            containers.get(i).draw(shapeBatch, 5 * width / 6, height -  (i + 1) * width / 3, colors.get(containers.get(i).getPolyomino().getColorIndex()));
+        }
 
         shapeBatch.setColor(0.25f ,0.25f ,0.25f ,0.25f);
 
@@ -168,8 +186,17 @@ public class WorldRenderer {
         }
 
         dead.add(first);
+        first = new Polyomino(containers.get(0).getPolyomino());
 
-        first = new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size())));
+        for(int i = 0; i < containers.size(); i++) {
+            if(i == containers.size() - 1){
+                containers.get(i).setPolyomino(new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size()))));
+            }
+
+            else
+                 containers.get(i).setPolyomino(new Polyomino(containers.get(i + 1).getPolyomino()));
+        }
+
         first.setPosition(new Vector2(width / 2, 4 * width / 3));
     }
 
@@ -189,7 +216,17 @@ public class WorldRenderer {
 
         first.moveUp();
         dead.add(first);
-        first = new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size())));
+        first = new Polyomino(containers.get(0).getPolyomino());
+
+        for(int i = 0; i < containers.size(); i++) {
+            if(i == containers.size() - 1){
+                containers.get(i).setPolyomino(new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size()))));
+            }
+
+            else
+                containers.get(i).setPolyomino(new Polyomino(containers.get(i + 1).getPolyomino()));
+        }
+
         first.setPosition(new Vector2(width / 2, 4 * width / 3));
     }
 
@@ -201,7 +238,7 @@ public class WorldRenderer {
                 //Gdx.app.log("DEBUG", tiles.get(i).get(j).getX() + "");
 
                 for(int ii = 0; ii < deadBlocks.size(); ii++){
-                    if(!tiles.get(i).get(j).overlaps(deadBlocks.get(ii))){
+                    if(!((deadBlocks.get(ii).getX() - tiles.get(i).get(j).getX()) < 1)){
                         //Gdx.app.log("DEBUG", "DON'T CLEAR");
                         b = false;
                         break;
@@ -213,11 +250,15 @@ public class WorldRenderer {
                 if(!b){
                     break;
                 }
+                else {
+                    for(Polyomino p : dead){
+                        p.moveDown();
+                    }
+                }
+
             }
 
-            if(b){
-                Gdx.app.log("DEBUG", b + "CLEAR");
-            }
+            b = true;
         }
     }
 

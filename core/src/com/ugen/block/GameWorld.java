@@ -25,6 +25,8 @@ public class GameWorld {
     private ArrayList<Polyomino> nextGeneration;
     private ArrayList<Color> colors;
 
+    long timeElapsed;
+
     float red;
     float green;
     float blue;
@@ -36,6 +38,8 @@ public class GameWorld {
     public GameWorld(PolyominoesGame game){
         this.theGame = game;
 
+        timeElapsed = System.currentTimeMillis();
+
         currentGeneration = new ArrayList<Polyomino>();
         nextGeneration = new ArrayList<Polyomino>();
         colors = new ArrayList<Color>();
@@ -45,9 +49,12 @@ public class GameWorld {
         if(prefs.contains("degree")){
             generationCap = prefs.getInteger("degree") - 1;
         }
+        else
+            generationCap = theGame.getGameScreen().getGenerationCap();
 
-        generationCap = theGame.getGameScreen().getGenerationCap();
         generatePolyominoes();
+
+        timeElapsed = System.currentTimeMillis() - timeElapsed;
 
         for(int i = 0; i < currentGeneration.size(); i++){
             red = (float) Math.sin((float)i * 6 / currentGeneration.size()) * 0.5f + 0.5f;
@@ -57,6 +64,9 @@ public class GameWorld {
             currentGeneration.get(i).setColorIndex(i);
             colors.add(new Color(red, green, blue, 1.0f));
         }
+
+        prefs.putInteger("degree", generationCap);
+
     }
 
     public void generatePolyominoes(){
@@ -93,7 +103,6 @@ public class GameWorld {
     }
 
     public void update(float delta){
-
     }
 
     public void setGenerationCap(int generationCap){

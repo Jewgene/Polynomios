@@ -73,7 +73,7 @@ public class InputHandler implements InputProcessor {
       //  Gdx.app.log("asdfasdfasdf", trueY + ", " + initY);
 
         if(trueY < initY){
-            if(Math.abs(trueY - initY) >= screen.getRenderer().getHeight() / 4){
+            if(Math.abs(trueY - initY) >= screen.getRenderer().getHeight() / 6){
                 screen.getRenderer().drop();
                 initY = trueY;
             }

@@ -30,7 +30,7 @@ public class MainMenu extends ScreenAdapter {
     }
 
     public void create(){
-        stage = new Stage(new ExtendViewport(108, 192)){
+        stage = new Stage(new ExtendViewport(216, 384)){
             @Override
             public boolean keyDown(int keyCode){
                 if(keyCode == Input.Keys.BACK)
