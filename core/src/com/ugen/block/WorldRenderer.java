@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -13,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -37,7 +37,7 @@ public class WorldRenderer {
     private ArrayList<ArrayList<Rectangle>> tiles;
     private ArrayList<Rectangle> deadBlocks;
     private ArrayList<PolyominoContainer> containers;
-    private Rectangle gameWindow;
+    private Matrix gameWindow;
 
     private long timer;
     private long initTime = System.currentTimeMillis();
@@ -76,14 +76,12 @@ public class WorldRenderer {
         width = cam.viewportWidth;
         height = cam.viewportHeight;
 
-        gameWindow = new Rectangle(width / 6, 0, 2 * width / 3, 4 * width / 3);
-
 
         first = (Polyominoes.get(rand.nextInt(Polyominoes.size())));
         first.setPosition(new Vector2(width / 2, 4 * width / 3));
 
         for(int i = 0; i < Polyominoes.size(); i++){
-            Polyominoes.get(i).setBlockWidth(width / (15 + 3 * (tileNum - 3)));
+            Polyominoes.get(i).setBlockWidth(width / (9 + 3 * (tileNum - 3)));
         }
 
         for(float i = 0; i < 4 * width / 3; i += first.getBlockWidth()){
@@ -92,6 +90,8 @@ public class WorldRenderer {
                 tiles.get((int)(i / first.getBlockWidth())).add(new Rectangle(width / 6 + j, i, first.getBlockWidth(), first.getBlockWidth()));
             }
         }
+
+        gameWindow = new Matrix(tiles.size(), tiles.get(0).size());
 
         minX = width / 6;
         maxX = width /6 + 2 * width / 3;
@@ -153,7 +153,6 @@ public class WorldRenderer {
                 }
             }
 
-        //clearRows();
 
         for(int i = 0; i < dead.size(); i++)
             dead.get(i).draw(shapeBatch, colors.get(dead.get(i).getColorIndex()));
@@ -163,12 +162,15 @@ public class WorldRenderer {
         shapeBatch.end();
 
 
-        shapeBatch.begin(ShapeRenderer.ShapeType.Line);
+        shapeBatch.begin(ShapeRenderer.ShapeType.Filled);
 
         for(int i = 0; i < containers.size(); i++) {
-            containers.get(i).draw(shapeBatch, 5 * width / 6, height -  (i + 1) * width / 3, colors.get(containers.get(i).getPolyomino().getColorIndex()));
+            containers.get(i).draw(shapeBatch, 5 * width / 6, height -  (i + 2) * width / 3, colors.get(containers.get(i).getPolyomino().getColorIndex()));
         }
 
+        shapeBatch.end();
+
+        shapeBatch.begin(ShapeRenderer.ShapeType.Line);
         shapeBatch.setColor(0.25f ,0.25f ,0.25f ,0.25f);
 
         for(ArrayList<Rectangle> rectangles : tiles){
@@ -183,9 +185,17 @@ public class WorldRenderer {
     public void killCurrent(){
         for(Rectangle rect : first.getBlocks()){
             deadBlocks.add(rect);
+            //Gdx.app.log("DEBUG", "" + (int)(rect.getY() / first.getBlockWidth()) + " , " + (int)((rect.getX() - width / 6) / first.getBlockWidth()));
+            gameWindow.put(1, gameWindow.getRows() - 1 - (int)(rect.getY() / first.getBlockWidth()), (int)((rect.getX() - width / 6) / first.getBlockWidth()));
+            //Gdx.app.log("DEBUG", "" + gameWindow.getData()[(int)(rect.getY() / first.getBlockWidth())][(int)((rect.getX() - width / 6) / first.getBlockWidth())]);
         }
 
+        gameWindow.show();
+
         dead.add(first);
+
+        clearRows();
+
         first = new Polyomino(containers.get(0).getPolyomino());
 
         for(int i = 0; i < containers.size(); i++) {
@@ -194,10 +204,11 @@ public class WorldRenderer {
             }
 
             else
-                 containers.get(i).setPolyomino(new Polyomino(containers.get(i + 1).getPolyomino()));
+                containers.get(i).setPolyomino(new Polyomino(containers.get(i + 1).getPolyomino()));
         }
 
         first.setPosition(new Vector2(width / 2, 4 * width / 3));
+
     }
 
     public void drop(){
@@ -215,7 +226,19 @@ public class WorldRenderer {
         }
 
         first.moveUp();
+
+        for(Rectangle rect : first.getBlocks()){
+            deadBlocks.add(rect);
+
+            gameWindow.put(1, gameWindow.getRows() - 1 - (int)(rect.getY() / first.getBlockWidth()), (int)((rect.getX() - width / 6) / first.getBlockWidth()));
+        }
+
+        //gameWindow.show();
+
         dead.add(first);
+
+        clearRows();
+
         first = new Polyomino(containers.get(0).getPolyomino());
 
         for(int i = 0; i < containers.size(); i++) {
@@ -233,29 +256,46 @@ public class WorldRenderer {
     public void clearRows(){
         boolean b = true;
 
-        for(int i = 0; i < tiles.size(); i++){
-            for(int j = 0; j < tiles.get(i).size(); j++){
-                //Gdx.app.log("DEBUG", tiles.get(i).get(j).getX() + "");
-
-                for(int ii = 0; ii < deadBlocks.size(); ii++){
-                    if(!((deadBlocks.get(ii).getX() - tiles.get(i).get(j).getX()) < 1)){
-                        //Gdx.app.log("DEBUG", "DON'T CLEAR");
-                        b = false;
-                        break;
-                    }
+        for(int i = 0; i < gameWindow.getRows(); i++){
+            for(int j = 0; j < gameWindow.getData()[i].length - 1; j++){
+                if(gameWindow.getData()[i][j] == 0){
+                    b = false;
                 }
-
-                //Gdx.app.log("DEBUG", b + "");
 
                 if(!b){
                     break;
                 }
-                else {
-                    for(Polyomino p : dead){
-                        p.moveDown();
+            }
+
+            if(b){
+                for(Polyomino p : dead) {
+
+                    for(Iterator<Rectangle> iter = p.getBlocks().iterator(); iter.hasNext();) {
+                        Rectangle rect = iter.next();
+
+                        if (gameWindow.getRows() - 1 - (int) (rect.getY() / rect.getWidth()) == i) {
+                            iter.remove();
+                            deadBlocks.remove(deadBlocks.indexOf(rect));
+                        }
                     }
                 }
 
+
+                for(Rectangle rect : deadBlocks){
+                    if(rect.getY() > (gameWindow.getRows() - i) * first.getBlockWidth()){
+                        rect.setPosition(rect.getX(), rect.getY() - rect.getWidth() - .5f);
+                    }
+                }
+
+                for(int j = 0; j < gameWindow.getRows(); j++){
+                    for(int a = 0; a < gameWindow.getData()[j].length; a++){
+                        gameWindow.getData()[j][a] = 0;
+                    }
+                }
+
+                for(Rectangle rect : deadBlocks){
+                    gameWindow.put(1, gameWindow.getRows() - 1 - (int)(rect.getY() / first.getBlockWidth()), (int)((rect.getX() - width / 6) / first.getBlockWidth()));
+                }
             }
 
             b = true;
@@ -292,7 +332,7 @@ public class WorldRenderer {
         boolean collided = false;
 
         for (int i = 0; i < dead.size(); i++) {
-            for (int j = 0; j < p.getBlocks().size(); j++) {
+            for (int j = 0; j < dead.get(i).getBlocks().size(); j++) {
                 for (int ii = 0; ii < p.getBlocks().size(); ii++) {
                     if (p.getBlocks().get(ii).overlaps(dead.get(i).getBlocks().get(j))) {
                         collided = true;

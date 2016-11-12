@@ -18,7 +18,7 @@ public class PolyominoContainer {
     }
 
     public void draw(ShapeRenderer sr, float posX, float posY, Color color){
-       // sr.rect(posX, posY, width, -height);
+        //sr.rect(posX, posY, width, -height);
 
         p.setBlockWidth(p.getBlockWidth());
         p.setPosition(new Vector2(posX, posY - p.getBlockWidth()));

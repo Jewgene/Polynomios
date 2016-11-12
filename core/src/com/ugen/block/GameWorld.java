@@ -3,8 +3,6 @@ package com.ugen.block;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,7 +64,6 @@ public class GameWorld {
         }
 
         prefs.putInteger("degree", generationCap);
-
     }
 
     public void generatePolyominoes(){

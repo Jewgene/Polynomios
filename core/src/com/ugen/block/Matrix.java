@@ -2,8 +2,7 @@ package com.ugen.block;
 
 
 import com.badlogic.gdx.Gdx;
-
-import java.util.stream.IntStream;
+import com.badlogic.gdx.Net;
 
 final public class Matrix {
     private int M;             // number of rows
@@ -25,8 +24,9 @@ final public class Matrix {
             for(int j = 0; j < N; j++)
                 integerData[i][j] = Integer.valueOf(data[i][j]);
 
-        downLeft = new Matrix(data);
-        upRight = new Matrix(data);
+        downLeft = new Matrix(new int[M][M]);
+        upRight = new Matrix(new int[M][M]);
+
 
         for(int i = 0; i < M - 1; i++){
             upRight.put(1, i, i + 1);
@@ -271,7 +271,7 @@ final public class Matrix {
     // print matrix to standard output
     public void show() {
         for (int i = 0; i < M; i++) {
-            Gdx.app.log("DEBUG", data[i][0] + " " + data[i][1] + " " + data[i][2] + " " + data[i][3]);
+            Gdx.app.log("DEBUG", data[i][0] + " " + data[i][1] + " " + data[i][2] + " " + data[i][3]  + " " + data[i][4] + " " + data[i][5] + " " + data[i][6] + " " + data[i][7] + " " + data[i][8] + " " + data[i][9]);
 
         }
         Gdx.app.log("DEBUG", " ");

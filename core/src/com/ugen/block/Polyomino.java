@@ -1,6 +1,5 @@
 package com.ugen.block;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -92,15 +91,15 @@ public class Polyomino {
             children.add(child);
         }
 
-        /*for(int i = 0; i < children.size(); i++){
+        for(int i = 0; i < children.size(); i++){
             for(int j = 0; j < children.size(); j++){
                 if(j != i){
-                    if(Arrays.equals(children.get(i).getGrid().getData(), children.get(j).getGrid().getData())){
-                        children.remove(i);
+                    if(Arrays.deepEquals(children.get(i).getGrid().getData(), children.get(j).getGrid().getData())){
+                        children.remove(j);
                     }
                 }
             }
-        }*/
+        }
     }
 
     public void rotate(){
@@ -203,7 +202,6 @@ public class Polyomino {
             for(int j = 0; j < grid.getRows(); j++){
                 if(grid.getData()[i][j] == 1) {
                     blocks.set(rectNum, new Rectangle(position.x + blockWidth * j + .25f, position.y - blockWidth * (i) + .25f, blockWidth - .5f, blockWidth - .5f));
-
                     rectNum++;
                 }
             }
