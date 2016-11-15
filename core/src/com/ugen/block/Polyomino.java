@@ -265,6 +265,10 @@ public class Polyomino {
         }
     }
 
+    public void scale(float factor){
+       blockWidth *= factor;
+    }
+
     public Vector2 getPosition(){
         return position;
     }

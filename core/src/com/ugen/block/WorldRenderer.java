@@ -104,6 +104,7 @@ public class WorldRenderer {
             container.setHeight(width / 6);
             container.setWidth(width / 6);
             container.setPolyomino(new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size()))));
+            container.getPolyomino().scale(0.8f);
         }
     }
 
@@ -197,10 +198,12 @@ public class WorldRenderer {
         clearRows();
 
         first = new Polyomino(containers.get(0).getPolyomino());
+        first.scale(1.0f / 0.8f);
 
         for(int i = 0; i < containers.size(); i++) {
             if(i == containers.size() - 1){
                 containers.get(i).setPolyomino(new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size()))));
+                containers.get(i).getPolyomino().scale(0.8f);
             }
 
             else
@@ -240,10 +243,12 @@ public class WorldRenderer {
         clearRows();
 
         first = new Polyomino(containers.get(0).getPolyomino());
+        first.scale(1.0f / 0.8f);
 
         for(int i = 0; i < containers.size(); i++) {
             if(i == containers.size() - 1){
                 containers.get(i).setPolyomino(new Polyomino(Polyominoes.get(rand.nextInt(Polyominoes.size()))));
+                containers.get(i).getPolyomino().scale(0.8f);
             }
 
             else
@@ -303,29 +308,7 @@ public class WorldRenderer {
     }
 
     public void project(Polyomino p){
-        Polyomino temp = new Polyomino(p);
-        temp.setPosition(p.getPosition());
 
-        boolean b = false;
-
-        while(!checkCollisions(temp)){
-            for(int i = 0; i < temp.getBlocks().size(); i++) {
-                if(!(temp.getBlocks().get(i).getY() > 0))
-                    b = true;
-            }
-            if(b)
-                break;
-            else
-                temp.moveDown();
-        }
-
-        temp.moveUp();
-
-        shapeBatch.begin(ShapeRenderer.ShapeType.Filled);
-
-        temp.draw(shapeBatch, Color.BLUE);
-
-        shapeBatch.end();
     }
 
     public boolean checkCollisions(Polyomino p) {

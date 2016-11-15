@@ -12,6 +12,7 @@ public class InputHandler implements InputProcessor {
 
     private long time;
     private boolean thing = false;
+    private boolean droppable = true;
 
     public InputHandler(GameScreen screen){
         this.screen = screen;
@@ -62,6 +63,7 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        droppable = true;
 
         return false;
     }
@@ -71,11 +73,13 @@ public class InputHandler implements InputProcessor {
         float trueX = screen.getCam().viewportWidth * screenX / Gdx.graphics.getWidth();
         float trueY = screen.getCam().viewportHeight - screen.getCam().viewportHeight * screenY / Gdx.graphics.getHeight();
       //  Gdx.app.log("asdfasdfasdf", trueY + ", " + initY);
-
-        if(trueY < initY){
-            if(Math.abs(trueY - initY) >= screen.getRenderer().getHeight() / 6){
-                screen.getRenderer().drop();
-                initY = trueY;
+        if(droppable) {
+            if (trueY < initY) {
+                if (Math.abs(trueY - initY) >= screen.getRenderer().getHeight() / 6) {
+                    screen.getRenderer().drop();
+                    initY = trueY;
+                    droppable = false;
+                }
             }
         }
 
